@@ -1,0 +1,21 @@
+sensors:
+  - sensor_plugin: kinect2_sensor_controller
+    cameraName: kinect2_depth
+    always_on: true
+    updateRate: 30.0    
+    imageTopicName: sd/image_ir_rect
+    depthImageTopicName: sd/image_depth_rect
+    pointCloudTopicName: sd/points
+    cameraInfoTopicName: sd/camera_info
+    pointCloudCutoff: 0.5
+    pointCloudCutoffMax: 4.5
+    robotNamespace: kinect2
+
+  - sensor_plugin: kinect2_camera_controller
+    alwaysOn: true
+    update_rate: 30.0
+    cameraName: kinect2_rgb
+    imageTopicName: hd/image_color_rect
+    cameraInfoTopicName: hd/camera_info
+    robotNamespace: kinect2
+    

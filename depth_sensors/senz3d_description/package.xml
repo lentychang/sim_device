@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+    <name>senz3d_description</name>
+    <version>0.0.0</version>
+    <description>
+        Description of Senz3d sensor.
+        This package contains the URDF and meshes describing the Senz3d web
+        camera.
+    </description>
+
+    <maintainer email="ludersdorfer@fortiss.org">
+        Marvin Ludersdorfer
+    </maintainer>
+    <license>BSD</license>
+    <url type="repository">https://github.com/brml/depth_sensors</url>
+    <url type="bugtracker">https://github.com/brml/depth_sensors/issues</url>
+    <author>Marvin Ludersdorfer</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+</package>
