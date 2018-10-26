@@ -1,3 +1,6 @@
+# Modified from BRML
+I modified some parameter of kinect2 for my thesis from BRML
+
 # depth_sensors
 URDF and meshes describing the Kinect V2 and Senz3d depth sensors for use 
 with ROS and Gazebo.

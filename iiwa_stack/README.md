@@ -1,3 +1,6 @@
+# Modified from IIWA STATCK
+I did some modification from iiwa stack for my thesis
+
 ## IIWA STACK
 ROS Indigo/Kinetic metapackage for the KUKA LBR IIWA R800/R820 (7/14 Kg).
 
