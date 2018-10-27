@@ -3,7 +3,7 @@
 import roslib
 from visualization_msgs.msg import Marker
 from visualization_msgs.msg import MarkerArray
-from thesis_visualization.srv import srv_visualModel, srv_visualModelRequest, srv_visualModelResponse
+from thesis_visualization_msgs.srv import srv_visualModel, srv_visualModelRequest, srv_visualModelResponse
 import rospy
 import math
 import ipdb

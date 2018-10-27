@@ -6,7 +6,7 @@ from tf import TransformListener
 import tf
 import geometry_msgs
 import ipdb
-import thesis_visualization.msg
+from thesis_visualization_msgs.msg import objectLocalization
 import std_msgs
 
 
@@ -18,7 +18,7 @@ class FakeNode:
         self.pubTopic = sys.argv[2]
        # print self.cameraFrameName
         self.__stopPub = False
-        self.pub = rospy.Publisher(self.pubTopic, thesis_visualization.msg.objectLocalization,queue_size=1)
+        self.pub = rospy.Publisher(self.pubTopic, objectLocalization,queue_size=1)
         self.rate = rospy.Rate(1)
         t_stamp = rospy.Time.now()
 
@@ -43,7 +43,7 @@ class FakeNode:
             self.fakePoses[i].orientation.z= poseList[0][1][2]
             self.fakePoses[i].orientation.w= poseList[0][1][3]
     def pubish(self):
-        msg = thesis_visualization.msg.objectLocalization()
+        msg = objectLocalization()
         msg.headers = self.fakeHeaders
         msg.modelList = self.fakeModels
         msg.pose = self.fakePoses
