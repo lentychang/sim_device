@@ -1,8 +1,0 @@
-prefix=/root/catkin_ws/src/sim_device/thesis_visualization/build/devel
-
-Name: thesis_visualization
-Description: Description of thesis_visualization
-Version: 0.0.0
-Cflags: -I/root/catkin_ws/src/sim_device/thesis_visualization/build/devel/include -I/root/catkin_ws/src/sim_device/thesis_visualization/include
-Libs: -L/root/catkin_ws/src/sim_device/thesis_visualization/build/devel/lib 
-Requires: roscpp rospy std_msgs visualization_msgs message_runtime

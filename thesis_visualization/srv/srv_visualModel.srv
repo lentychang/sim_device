@@ -1,7 +1,0 @@
-string modelName
-geometry_msgs/Pose pose
-std_msgs/ColorRGBA colorRGBA
-float32 scale
-string ns
----
-bool success
