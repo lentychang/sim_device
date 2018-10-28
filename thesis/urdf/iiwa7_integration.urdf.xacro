@@ -18,11 +18,12 @@
   <xacro:arg name="origin_xyz" default="0 0 0"/>
   <xacro:arg name="origin_rpy" default="0 0 0"/>
   <xacro:arg name="table_ee" default="table_ee"/>
+  <xacro:arg name="modelDir" default="/root/exchange/tempData"/>
   
   <!-- Fix to world just for testing -->
   <link name="world"/>
  
-  <xacro:add_table table_ee="$(arg table_ee)"  parent="world">
+  <xacro:add_table table_ee="$(arg table_ee)" modelDir="$(arg modelDir)"  parent="world">
     <origin xyz="$(arg table_origin_xyz)" rpy="$(arg table_origin_rpy)" />
   </xacro:add_table>
 

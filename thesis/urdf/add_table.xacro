@@ -6,7 +6,7 @@
         name="add_table">
 
 
-  <xacro:macro name="add_table" params="table_ee parent *origin">
+  <xacro:macro name="add_table" params="table_ee modelDir parent *origin">
 
     <joint name="world2table_joint" type="fixed">
       <xacro:insert_block name="origin"/>>
@@ -26,7 +26,7 @@
         <origin rpy="0 0 0" xyz="0.0 0 0"/>
         <!--origin rpy="0 0 0" xyz="0.0 0 -${0.99613/2}"/-->
         <geometry>
-          <mesh filename="package://thesis/meshes/lf064_base.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://${modelDir}/meshes/lf064_base.stl" scale="0.001 0.001 0.001"/>
           <!--box size="0.985 0.698 0.99613"/-->
         </geometry>
         <material name="grey">
@@ -67,7 +67,7 @@
      <visual>
         <origin rpy="0 0 0" xyz="0.0 0 0"/>
         <geometry>
-          <mesh filename="package://thesis/meshes/lf064_table.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="file://${modelDir}/meshes/lf064_table.stl" scale="0.001 0.001 0.001"/>
         <!--box size="0.146 0.05 0.0735"/-->
         </geometry>
         <material name="grey">
@@ -78,7 +78,7 @@
       <collision>
         <origin rpy="0 0 0" xyz="0.0 0 0"/>
           <geometry>
-            <mesh filename="package://thesis/meshes/lf064_table.stl" scale="0.001 0.001 0.001"/>
+            <mesh filename="file://${modelDir}/meshes/lf064_table.stl" scale="0.001 0.001 0.001"/>
           </geometry>
       </collision>
     </link>

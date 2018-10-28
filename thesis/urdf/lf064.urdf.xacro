@@ -32,7 +32,7 @@
      <visual>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="file://${modelDir}/meshes/lf064-$(arg modelNr).stl" scale="$(arg scale)"/>
+          <mesh filename="file://$(arg modelDir)/meshes/lf064-$(arg modelNr).stl" scale="$(arg scale)"/>
         </geometry>
         <material name="grey">
           <color rgba="0.5 0.5 0.5 1"/>
@@ -42,7 +42,7 @@
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0" />
           <geometry>
-            <mesh filename="file://${modelDir}/meshes/lf064-$(arg modelNr).stl" scale="$(arg scale)"/>
+            <mesh filename="file://$(arg modelDir)/meshes/lf064-$(arg modelNr).stl" scale="$(arg scale)"/>
             <!--box size="0.8 0.8 1"/-->
            </geometry>
       </collision>
