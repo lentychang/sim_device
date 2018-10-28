@@ -1,25 +1,28 @@
 <?xml version='1.0'?>
     <launch>
         <arg name="cameraFrame" default="/kinect2_depth_optical_frame"/>
-        <arg name="recogModel_pub2Topic" default="/detectedObjs_preliminary"/>
+        <arg name="pubTopic_detectedObjs_beforeAligned" default="/detectedObjs_beforeAligned"/>
 
         <!--a fake node that publish fake object recognition results-->
         <node name="fake_recognition_publisher" pkg="thesis_visualization" type="fakeObjPublisher.py" 
-              output="screen" respawn="false" args="$(arg cameraFrame) $(arg recogModel_pub2Topic)">
+              output="screen" respawn="false" args="$(arg cameraFrame) $(arg pubTopic_detectedObjs_beforeAligned)">
         </node>
 
         <!--First MarkerArray node: for publishing aligned models-->
-        <arg name="markerArrayTopic_preliminary" default="/markerArray_preliminary"/>
-        <arg name="ns_preliminary" default="preliminary"/>
-        <node name="markerArray_publisher_preliminary" pkg="thesis_visualization" type="addVisualModelNode.py" 
-              output="screen" respawn="false" args="$(arg recogModel_pub2Topic) $(arg markerArrayTopic_preliminary) $(arg ns_preliminary)">
+        <arg name="subTopic_beforeAligned" default="/detectedObjs_beforeAligned"/>
+        <arg name="ns_beforeAligned" default="beforeAligned"/>
+        <arg name="pubTopic_markerArray_beforeAligned" default="/markerArray_beforeAligned"/>
+        <node name="markerArray_publisher_beforeAligned" pkg="thesis_visualization" type="addVisualModelNode.py" 
+              output="screen" respawn="false" args="$(arg subTopic_beforeAligned) $(arg pubTopic_markerArray_beforeAligned) $(arg ns_beforeAligned)">
         </node>
 
         <!--Second MarkerArray node: for publishing aligned models-->
-        <arg name="markerArrayTopic_afterAligned" default="/markerArray_afterAlign"/>
+	<arg name="subTopic_modelAligned" default="/detectedObjs_afterAligned"/>
+        <arg name="pubTopic_markerArray_afterAligned" default="/markerArray_afterAligned"/>
         <arg name="ns_afterAligned" default="afterAligned"/>
+
         <node name="markerArray_publisher_afterAligned" pkg="thesis_visualization" type="addVisualModelNode.py" 
-              output="screen" respawn="false" args="$(arg recogModel_pub2Topic) $(arg markerArrayTopic_afterAligned) $(arg ns_afterAligned)">
+              output="screen" respawn="false" args="$(arg subTopic_modelAligned) $(arg pubTopic_markerArray_afterAligned) $(arg ns_afterAligned)">
         </node>
 
 
