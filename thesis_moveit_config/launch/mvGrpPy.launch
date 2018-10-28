@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-  <include file="$(find thesis_moveit_config)/launch/moveit_planning_execution.launch"/>
-
-  <node name="mvGrpPy" pkg="thesis_moveit_config" type="mvGrpSrv.py" respawn="false" output="screen">
-    <remap from="/joint_states" to="/iiwa/joint_states"/>
-  </node>
-
-</launch>
