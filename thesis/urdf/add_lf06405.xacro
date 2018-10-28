@@ -1,0 +1,52 @@
+<?xml version='1.0'?>
+<robot  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+        xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+        xmlns:xacro="http://www.ros.org/wiki/xacro"
+        name="add_lf06405">
+
+
+  <xacro:macro name="add_lf06405" params="parent modelDir *origin05">
+
+    <!--Joint LF064-05-->
+    <joint name="joint_lf06505" type="floating">
+      <xacro:insert_block name="origin04"/>5
+      <parent link="${parent}"/>
+      <child link="link_lf06405"/>
+    </joint>
+
+     <!-- LINK LF064-05 -->
+    <link name="link_lf06405">
+      <inertial>
+        <mass value="1"/>
+          <origin xyz="0 0 0" />
+            <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="1.0"  iyz="0.0"  izz="1.0" />
+      </inertial>
+
+     <visual>
+        <origin xyz="0.0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://${modelDir}/meshes/lf064-05.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin xyz="0.0 0 0" rpy="0 0 0" />
+          <geometry>
+            <mesh filename="file://${modelDir}/meshes/lf064-05.stl" scale="0.001 0.001 0.001"/>
+            <!--box size="0.8 0.8 1"/-->
+           </geometry>
+      </collision>
+    </link>
+    <gazebo reference="link_lf06405">
+      <material>Gazebo/Grey</material>
+      <turnGravityOff>false</turnGravityOff>
+      <mu1>0.5</mu1>
+      <mu2>0.4</mu2>
+    </gazebo>
+
+  </xacro:macro>
+</robot>
