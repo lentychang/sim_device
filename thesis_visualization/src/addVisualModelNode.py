@@ -10,7 +10,7 @@ import ipdb
 import sys
 import random
 from std_msgs.msg import ColorRGBA
-from thesis_visualization.msg import objectLocalization
+from thesis_visualization_msgs.msg import objectLocalization
 
 # this node subscribe recognized models, and publish marker arrays
 # takes 3 args
