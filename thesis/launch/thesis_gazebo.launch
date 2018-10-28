@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <!-- ===================================================================================== -->
+    <!-- |    Lauch file to start Gazebo with an IIWA using various controllers.	         | -->
+    
+    <!-- |    It allows to customize the name of the robot, for each robot                   | -->
+    <!-- |	  its topics will be under a nameespace with the same name as the robot's.       | -->
+    
+    <!-- |	  One can choose to have a joint trajectory controller or                        | -->
+    <!-- |    controllers for the single joints, using the "trajectory" argument.            | -->
+    <!-- ===================================================================================== -->
+    
+    <arg name="hardware_interface" default="PositionJointInterface" />
+    <arg name="robot_name" default="iiwa" />
+    <arg name="model" default="iiwa7"/>
+    <arg name="trajectory" default="true"/>
+    
+    <!-- Loads the Gazebo world. -->
+    <include file="$(find thesis)/launch/thesis_world.launch">
+        <arg name="hardware_interface" value="$(arg hardware_interface)" />
+        <arg name="robot_name" value="$(arg robot_name)" />
+        <arg name="model" value="$(arg model)" />
+    </include>
+    
+    <!-- Spawn controllers - it uses a JointTrajectoryController -->
+    <group  ns="$(arg robot_name)" if="$(arg trajectory)">
+        
+        <include file="$(find iiwa_control)/launch/iiwa_control.launch">
+            <arg name="hardware_interface" value="$(arg hardware_interface)" />
+            <arg name="controllers" value="
+                                           joint_state_controller 
+                                           $(arg hardware_interface)_trajectory_controller 
+                                           wsg_50_gl 
+                                           wsg_50_gr" />
+            <arg name="robot_name" value="$(arg robot_name)" />
+            <arg name="model" value="$(arg model)" />
+        </include>
+        
+    </group>
+
+    <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gr.yaml" command="load" />
+    <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gl.yaml" command="load" />
+    <rosparam ns="$(arg robot_name)" command="load" file="$(find wsg_50_simulation)/urdf/wsg_50_dependent_joints.yaml"/>
+    
+    <!-- Spawn controllers - it uses an Effort Controller for each joint -->
+    <group ns="$(arg robot_name)" unless="$(arg trajectory)">
+        <include file="$(find iiwa_control)/launch/iiwa_control.launch">
+            <arg name="hardware_interface" value="$(arg hardware_interface)"/>
+            <arg name="controllers" value="joint_state_controller
+                 $(arg hardware_interface)_J1_controller
+                 $(arg hardware_interface)_J2_controller
+                 $(arg hardware_interface)_J3_controller
+                 $(arg hardware_interface)_J4_controller
+                 $(arg hardware_interface)_J5_controller
+                 $(arg hardware_interface)_J6_controller
+                 $(arg hardware_interface)_J7_controller
+                 wsg_50_gl
+                 wsg_50_gr
+                 "/>
+            <arg name="robot_name" value="$(arg robot_name)" />
+            <arg name="model" value="$(arg model)" />
+        </include>
+    </group>
+
+  <!-- Kinect2 controller-->
+  <!--rosparam file="$(find kinect_control)/config/kinect_control.yaml"
+            command="load"/-->
+  <!--node pkg="controller_manager" type="spawner" args="wsg_50_gl" name="wsg_50_gl" /-->
+
+
+  <!-- Schunk Gripper -->
+  <!-- Launch the joint controller -->
+  <!--include file="$(find wsg_50_simulation)/launch/wsg_50_controllers.launch"/-->
+  <!-- Launch the joint state publisher, necessary to define the gripper dependency relation -->
+  <!--param name="use_gui" value="True"/-->
+
+  <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- Launch the fake driver to provide the same services that in the real gripper -->
+  <node name="wsg_50" pkg="wsg_50_simulation" type="wsg_50_sim_driver">
+        <param name = "vel_pub_l_Topic" type="string" value="/$(arg robot_name)/wsg_50_gl/command"/>
+        <param name = "vel_pub_r_Topic" type="string" value="/$(arg robot_name)/wsg_50_gr/command"/>
+  </node>
+    
+    
+</launch>

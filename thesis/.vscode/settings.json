@@ -1,0 +1,17 @@
+{
+    "python.pythonPath": "/usr/bin/python",
+    "python.envFile":"${workspaceFolder}/.vscode/rospy.env",
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/kinetic/lib/python2.7/dist-packages/",
+        "${workspaceFolder}/srv",
+        "${workspaceFolder}"
+    ],
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore=E501",
+        "--ignore=E127",
+        "--ignore=E266"
+     ]
+}

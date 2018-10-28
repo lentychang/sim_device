@@ -1,0 +1,79 @@
+<?xml version='1.0'?>
+
+<launch>
+    <arg name="modelDir" default="/root/exchange/tempData"/>
+    <arg name="origin_xyz_01" default="0.3 0.25 1"/>
+    <arg name="origin_xyz_02" default="0.3 0.2 1"/>
+    <arg name="origin_xyz_03" default="0.3 0.3 1"/>
+    <arg name="origin_xyz_04" default="0.2 0.2 1"/>
+    <arg name="origin_xyz_05" default="0.25 0.2 1"/>
+    <arg name="origin_rpy_01" default="0 0 0"/>
+    <arg name="origin_rpy_02" default="0 0 0"/>
+    <arg name="origin_rpy_03" default="0 0 0"/>
+    <arg name="origin_rpy_04" default="0 0 0"/>
+    <arg name="origin_rpy_05" default="0 0 0"/>
+    <arg name="root_linkName" default="world"/>
+
+    <group ns="lf06401">
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find thesis)/urdf/lf064.urdf.xacro' modelDir:=$(arg modelDir) origin_xyz:=$(arg origin_xyz_01) origin_rpy:=$(arg origin_rpy_01) root_linkName:=$(arg root_linkName) modelNr:='01' scale:='0.001 0.001 0.001'"/>
+        <node name="urdf_spawner_lf06401" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model lf06401 -param robot_description"/>
+        <include file="$(find joint_state_controller)/joint_state_controller.launch"/>
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+            <remap from="joint_states" to="/lf06401/joint_states" />
+        </node>
+    </group>
+
+    <group ns="lf06402">
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find thesis)/urdf/lf064.urdf.xacro' modelDir:=$(arg modelDir) origin_xyz:=$(arg origin_xyz_02) origin_rpy:=$(arg origin_rpy_02) root_linkName:=$(arg root_linkName) modelNr:='02' scale:='0.001 0.001 0.001'"/>
+        <node name="urdf_spawner_lf06402" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model lf06402 -param robot_description"/>
+        
+        <!-- load configuration -->
+        <rosparam command="load" file="$(find joint_state_controller)/joint_state_controller.yaml" />
+        <!-- spawn controller -->
+        <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="joint_state_controller" />
+
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+           <remap from="joint_states" to="/lf06402/joint_states" />
+        </node>
+    </group>
+
+    <group ns="lf06403">
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find thesis)/urdf/lf064.urdf.xacro' modelDir:=$(arg modelDir) origin_xyz:=$(arg origin_xyz_03) origin_rpy:=$(arg origin_rpy_03) root_linkName:=$(arg root_linkName) modelNr:='03' scale:='0.001 0.001 0.001'"/>
+        <node name="urdf_spawner_lf06403" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model lf06403 -param robot_description"/>
+        <include file="$(find joint_state_controller)/joint_state_controller.launch"/>
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+         <remap from="joint_states" to="/lf06403/joint_states" />
+        </node>
+    </group>
+
+    <group ns="lf06404">
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find thesis)/urdf/lf064.urdf.xacro' modelDir:=$(arg modelDir) origin_xyz:=$(arg origin_xyz_04) origin_rpy:=$(arg origin_rpy_04) root_linkName:=$(arg root_linkName) modelNr:='04' scale:='0.001 0.001 0.001'"/>
+        <node name="urdf_spawner_lf06404" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model lf06404 -param robot_description"/>  
+        <include file="$(find joint_state_controller)/joint_state_controller.launch"/>
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+          <remap from="joint_states" to="/lf06404/joint_states" />   
+        </node>
+    </group>
+    <group ns="lf06405">
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find thesis)/urdf/lf064.urdf.xacro' modelDir:=$(arg modelDir) origin_xyz:=$(arg origin_xyz_05) origin_rpy:=$(arg origin_rpy_05) root_linkName:=$(arg root_linkName) modelNr:='05' scale:='0.001 0.001 0.001'"/>
+        <node name="urdf_spawner_lf06405" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model lf06405 -param robot_description"/>
+        <include file="$(find joint_state_controller)/joint_state_controller.launch"/>
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="false" output="screen">
+            <remap from="joint_states" to="/lf06405/joint_states" />
+        </node>
+
+    </group>
+
+
+
+</launch>
