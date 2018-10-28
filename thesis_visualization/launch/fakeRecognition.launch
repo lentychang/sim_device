@@ -2,6 +2,7 @@
     <launch>
         <arg name="cameraFrame" default="/kinect2_depth_optical_frame"/>
         <arg name="pubTopic_detectedObjs_beforeAligned" default="/detectedObjs_beforeAligned"/>
+        <arg name="modelDir" default="/root/exchange/tempData"/>
 
         <!--a fake node that publish fake object recognition results-->
         <node name="fake_recognition_publisher" pkg="thesis_visualization" type="fakeObjPublisher.py" 
@@ -9,21 +10,19 @@
         </node>
 
         <!--First MarkerArray node: for publishing aligned models-->
-        <arg name="subTopic_beforeAligned" default="/detectedObjs_beforeAligned"/>
-        <arg name="ns_beforeAligned" default="beforeAligned"/>
+        <arg name="subTopic_detectedObjs_beforeAligned" default="/detectedObjs_beforeAligned"/>
         <arg name="pubTopic_markerArray_beforeAligned" default="/markerArray_beforeAligned"/>
+        <arg name="ns_beforeAligned" default="beforeAligned"/>
         <node name="markerArray_publisher_beforeAligned" pkg="thesis_visualization" type="addVisualModelNode.py" 
-              output="screen" respawn="false" args="$(arg subTopic_beforeAligned) $(arg pubTopic_markerArray_beforeAligned) $(arg ns_beforeAligned)">
+              output="screen" respawn="false" args="$(arg subTopic_detectedObjs_beforeAligned) $(arg pubTopic_markerArray_beforeAligned) $(arg ns_beforeAligned) $(arg modelDir)">
         </node>
 
         <!--Second MarkerArray node: for publishing aligned models-->
-	<arg name="subTopic_modelAligned" default="/detectedObjs_afterAligned"/>
-        <arg name="pubTopic_markerArray_afterAligned" default="/markerArray_afterAligned"/>
+        <arg name="subTopic_detectedObjs_afterAligned" default="/detectedObjs_afterAligned"/>
+        <arg name="pubTopic_makerArray_afterAligned" default="/markerArray_afterAligned"/>
         <arg name="ns_afterAligned" default="afterAligned"/>
-
         <node name="markerArray_publisher_afterAligned" pkg="thesis_visualization" type="addVisualModelNode.py" 
-              output="screen" respawn="false" args="$(arg subTopic_modelAligned) $(arg pubTopic_markerArray_afterAligned) $(arg ns_afterAligned)">
+              output="screen" respawn="false" args="$(arg subTopic_detectedObjs_afterAligned) $(arg pubTopic_makerArray_afterAligned) $(arg ns_afterAligned) $(arg modelDir)">
         </node>
-
-
     </launch>
+

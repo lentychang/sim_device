@@ -22,9 +22,10 @@ class MarkersManipulation:
     def __init__(self):
         rospy.init_node('addPremitiveObj',anonymous=True)
         
-        self.subTopic = sys.argv[1]
-        self.pubTopic = sys.argv[2]
+        self.__subTopic = sys.argv[1]
+        self.__pubTopic = sys.argv[2]
         self.ns = sys.argv[3]
+        self.__modelDir = sys.argv[4]
         self.scale = 0.001
         self.color = ColorRGBA()
         self.color.r = round(random.uniform(0,1),1)
@@ -34,8 +35,8 @@ class MarkersManipulation:
 
         self.markerArray = MarkerArray()
         self.objList = objectLocalization()
-        self.sub = rospy.Subscriber(self.subTopic, objectLocalization, self.__subCb, queue_size=1)
-        self.pub = rospy.Publisher(self.pubTopic, MarkerArray,queue_size=1)
+        self.sub = rospy.Subscriber(self.__subTopic, objectLocalization, self.__subCb, queue_size=1)
+        self.pub = rospy.Publisher(self.__pubTopic, MarkerArray,queue_size=1)
         self.rate = rospy.Rate(1)
         
 
@@ -61,7 +62,7 @@ class MarkersManipulation:
         marker.header.stamp = rospy.Time.now()
         marker.ns = self.ns
         marker.type = marker.MESH_RESOURCE
-        filePath = "package://thesis/meshes/" + modelname + ".stl"
+        filePath = "file://" + self.__modelDir + "/meshes/" + modelname + ".stl"
         # print filePath
         marker.mesh_resource = filePath
         marker.action = marker.ADD
