@@ -10,7 +10,7 @@
 
   <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
   <!--Import the lbr iiwa macro -->
-  <xacro:include filename="$(find thesis)/urdf/add_lf064$(arg modelNr).xacro" />
+  <!--xacro:include filename="$(find thesis)/urdf/add_lf064$(arg modelNr).xacro" /-->
   
   <!-- Fix to world just for testing -->
   <link name="$(arg root_linkName)"/>
