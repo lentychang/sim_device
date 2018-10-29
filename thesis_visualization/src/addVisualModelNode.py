@@ -62,7 +62,7 @@ class MarkersManipulation:
         marker.header.stamp = rospy.Time.now()
         marker.ns = self.ns
         marker.type = marker.MESH_RESOURCE
-        filePath = "file://" + self.__modelDir + "/meshes/" + modelname + ".stl"
+        filePath = "file://" + self.__modelDir + "/meshes/" + modelname + ".dae"
         # print filePath
         marker.mesh_resource = filePath
         marker.action = marker.ADD
