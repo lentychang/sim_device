@@ -12,6 +12,8 @@
         "--max-line-length=120",
         "--ignore=E501",
         "--ignore=E127",
-        "--ignore=E266"
-     ]
+        "--ignore=E266",
+        "--ignore=E401"
+     ],
+     "terminal.integrated.fontFamily": "monospace"
 }

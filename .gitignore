@@ -1,3 +1,8 @@
 *.pyc
 *.swp
 build/
+thesis/urdf/lf06401.urdf
+thesis/urdf/lf06402.urdf
+thesis/urdf/lf06403.urdf
+thesis/urdf/lf06404.urdf
+thesis/urdf/lf06405.urdf
