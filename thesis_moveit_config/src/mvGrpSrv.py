@@ -147,16 +147,38 @@ class MoveGroupPythonInteface(object):
         self.group_names = group_names
 
         self.pose_goal = geometry_msgs.msg.Pose()
-        self.poseList = [geometry_msgs.msg.Pose(), geometry_msgs.msg.Pose(), geometry_msgs.msg.Pose()]
+        self.poseList = [geometry_msgs.msg.Pose()]
         self.poseList[0].position.x = 0.099
         self.poseList[0].position.y = 0.160
         self.poseList[0].position.z = 1.611
-        self.poseList[0].orientation.w = -0.044
         self.poseList[0].orientation.x = 0.982
         self.poseList[0].orientation.y = 0.080
         self.poseList[0].orientation.z = 0.163
-
+	self.poseList[0].orientation.w = -0.044
         self.set_pose_goal(0)
+        self.appendPose()
+
+
+    def appendPose(self):
+        xyzxyzwList = [-0.2297, 0.0647, 1.8842, -0.6999, -0.664, -0.2292, 0.127]
+	pose = self.__genPosefromList(xyzxyzwList)
+        self.poseList.append(pose)
+        xyzxyzwList = [-0.1339, 0.3287, 1.5882, 0.6753, 0.6392, 0.2902, -0.226]
+	pose = self.__genPosefromList(xyzxyzwList)
+        self.poseList.append(pose)
+
+
+
+    def __genPosefromList(self, xyzxyzwlist):
+        pose = geometry_msgs.msg.Pose()
+        pose.position.x = xyzxyzwlist[0]
+        pose.position.y = xyzxyzwlist[1]
+        pose.position.z = xyzxyzwlist[2]
+        pose.orientation.x = xyzxyzwlist[3]
+        pose.orientation.y = xyzxyzwlist[4]
+        pose.orientation.z = xyzxyzwlist[5]
+        pose.orientation.w = xyzxyzwlist[6]
+        return pose
 
     def go_to_joint_state(self):
         # Copy class variables to local variables to make the web tutorials more clear.
