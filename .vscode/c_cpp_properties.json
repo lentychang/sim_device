@@ -1,0 +1,38 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/root/catkin_ws/devel/include",
+                "/opt/ros/kinetic/include",
+                "/root/catkin_ws/src/opt/collada_urdf/collada_parser/include",
+                "/root/catkin_ws/src/opt/collada_urdf/collada_urdf/include",
+                "/root/catkin_ws/src/opt/ros_controllers/diff_drive_controller/include",
+                "/root/catkin_ws/src/opt/ros_controllers/effort_controllers/include",
+                "/root/catkin_ws/src/opt/ros_controllers/force_torque_sensor_controller/include",
+                "/root/catkin_ws/src/opt/ros_controllers/forward_command_controller/include",
+                "/root/catkin_ws/src/opt/ros_controllers/four_wheel_steering_controller/include",
+                "/root/catkin_ws/src/opt/ros_controllers/gripper_action_controller/include",
+                "/root/catkin_ws/src/sim_device/iiwa_stack/iiwa_hw/include",
+                "/root/catkin_ws/src/sim_device/iiwa_stack/iiwa_ros/include",
+                "/root/catkin_ws/src/opt/ros_controllers/imu_sensor_controller/include",
+                "/root/catkin_ws/src/opt/ros_controllers/joint_state_controller/include",
+                "/root/catkin_ws/src/opt/ros_controllers/joint_trajectory_controller/include",
+                "/root/catkin_ws/src/opt/ros_controllers/position_controllers/include",
+                "/root/catkin_ws/src/opt/robot_state_publisher/include",
+                "/root/catkin_ws/src/sim_device/thesis/include",
+                "/root/catkin_ws/src/opt/urdf/urdf/include",
+                "/root/catkin_ws/src/opt/urdf/urdf_parser_plugin/include",
+                "/root/catkin_ws/src/opt/ros_controllers/velocity_controllers/include",
+                "/root/catkin_ws/src/sim_device/wsg50-ros-pkg/wsg_50_driver/include",
+                "/usr/include"
+            ],
+            "name": "Linux",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
