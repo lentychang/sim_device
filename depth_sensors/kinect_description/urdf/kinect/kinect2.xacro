@@ -31,7 +31,7 @@
                 <geometry>
                     <mesh filename="package://kinect_description/meshes/sensors/kinect2.dae" scale="0.001 0.001 0.001"/>
                 </geometry>
-                <origin xyz="0 0 0" rpy="1.57 -1.57 0"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
                 <material name="black"/>
             </visual>
 
