@@ -86,7 +86,7 @@
       <visual>
           <origin xyz="0.0 0 0" rpy="0 0 0" />
           <geometry>
-             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.stl" scale="0.001 0.001 0.001"/>
+             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.dae" scale="0.001 0.001 0.001"/>
 	     <!--box size="0.0175 0.03 0.024"/-->
           </geometry>
           <material name="black">
@@ -98,7 +98,7 @@
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
 	     <!--box size="0.0175 0.03 0.024"/-->
-             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.stl" scale="0.001 0.001 0.001"/>
+             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.dae" scale="0.001 0.001 0.001"/>
          </geometry>
      </collision>
      <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
@@ -146,7 +146,7 @@
       <visual>
           <origin xyz="0.0 0 0" rpy="0 0 0" />
           <geometry>
-             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.stl" scale="0.001 0.001 0.001"/>
+             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.dae" scale="0.001 0.001 0.001"/>
 	     <!--box size="0.0175 0.03 0.024"/-->
           </geometry>
           <material name="black">
@@ -158,7 +158,7 @@
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
 	     <!--box size="0.0175 0.03 0.024"/-->
-             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.stl" scale="0.001 0.001 0.001"/>
+             <mesh filename="package://wsg_50_simulation/meshes/GUIDE_WSG50_110.dae" scale="0.001 0.001 0.001"/>
          </geometry>
      </collision>
      <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
