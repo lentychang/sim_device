@@ -13,7 +13,7 @@
  
   <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
   <xacro:arg name="robot_name" default="iiwa"/>
-  <xacro:arg name="table_origin_xyz" default="0 0 0.997"/>
+  <xacro:arg name="table_origin_xyz" default="0 0 1.2"/>
   <xacro:arg name="table_origin_rpy" default="0 0 0"/>
   <xacro:arg name="origin_xyz" default="0 0 0"/>
   <xacro:arg name="origin_rpy" default="0 0 0"/>
@@ -39,7 +39,7 @@
   </xacro:wsg_50_xacro>
 
 
-  <xacro:sensor_kinect prefix="/" name="kinect2" parent="iiwa_link_ee" cam_px="0.0" cam_py="0.03" cam_pz="0.04" cam_or="${PI/2}" cam_op="${-PI/2}" cam_oy="0" />
+  <xacro:sensor_kinect prefix="/" name="kinect2" parent="iiwa_link_ee" cam_px="0.0" cam_py="0.02" cam_pz="0.08" cam_or="${PI/2}" cam_op="${-PI/2}" cam_oy="0" />
 
   
 </robot>

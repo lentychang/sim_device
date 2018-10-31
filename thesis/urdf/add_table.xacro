@@ -18,16 +18,16 @@
     <link name="link_tableBase">
       <inertial>
         <mass value="80"/>
-          <origin xyz="0 0 -${0.997/2}" />
+          <origin xyz="0 0 -${0.5}" />
             <inertia  ixx="${80/12*(0.698*0.698+0.997*0.997)}" ixy="0.0"  ixz="0.0"  iyy="${80/12*(0.685*0.685+0.997*0.997)}"  iyz="0.0"  izz="${80/12*(0.698*0.698+0.685*0.685)}" />
       </inertial>
  
      <visual>
-        <origin rpy="0 0 0" xyz="0.0 0 0"/>
+        <origin rpy="0 0 0" xyz="0.0 0 -${1.2/2 + 0.0075}"/>
         <!--origin rpy="0 0 0" xyz="0.0 0 -${0.99613/2}"/-->
         <geometry>
-          <mesh filename="file://${modelDir}/meshes/lf064_base.stl" scale="0.001 0.001 0.001"/>
-          <!--box size="0.985 0.698 0.99613"/-->
+          <!--mesh filename="file://${modelDir}/meshes/lf064_base.stl" scale="0.001 0.001 0.001"/-->
+          <box size="0.985 0.698 1.2"/>
         </geometry>
         <material name="grey">
           <color rgba="0.5 0.5 0.5 1"/>
@@ -36,10 +36,10 @@
     
       <collision>
         <!--origin rpy="0 0 0" xyz="0.0 0 0"/-->
-        <origin rpy="0 0 0" xyz="0.0 0 -${0.997/2}"/>
+        <origin rpy="0 0 0" xyz="0.0 0 -${1.2/2}"/>
           <geometry>
             <!--mesh filename="package://thesis/meshes/lf064_base.stl" scale="0.001 0.001 0.001"/-->
-            <box size="0.985 0.698 0.997"/>
+            <box size="0.985 0.698 1.2"/>
           </geometry>
       </collision>
     </link>
