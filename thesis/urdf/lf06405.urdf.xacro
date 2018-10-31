@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<robot name="lf064" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="origin_xyz" default="'0 0 0'"/>
+  <xacro:arg name="origin_rpy" default="'0 0 0'"/>
+  <xacro:arg name="root_linkName" default="world"/>
+  <xacro:arg name="modelDir" default="/root/exchange/tempData"/>
+  <xacro:arg name="scale" default="'0.001 0.001 0.001'"/>
+
+  <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
+  
+  <!-- Fix to world just for testing -->
+  <link name="$(arg root_linkName)"/>
+
+   <joint name="joint_lf06405" type="floating">
+      <origin xyz="$(arg origin_xyz)" rpy="$(arg origin_rpy)" />
+      <parent link="$(arg root_linkName)"/>
+      <child link="link_lf06405"/>
+    </joint>
+
+     <!-- LINK LF064XX -->
+    <link name="link_lf06405">
+      <inertial>
+        <mass value="1.5"/>
+          <origin xyz="0 0 0"/>
+            <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="1.0"  iyz="0.0"  izz="1.0" />
+      </inertial>
+ 
+     <visual>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(arg modelDir)/meshes/lf064-05.dae" scale="$(arg scale)"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+    
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+          <geometry>
+            <mesh filename="file://$(arg modelDir)/meshes/lf064-05.dae" scale="$(arg scale)"/>
+            <!--box size="0.8 0.8 1"/-->
+           </geometry>
+      </collision>
+    </link>
+    <gazebo reference="$link_lf06405">
+      <material>Gazebo/Grey</material>
+      <turnGravityOff>false</turnGravityOff>
+      <mu1>0.6</mu1>
+      <mu2>0.4</mu2>
+    </gazebo>
+
+    <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/lf06405</robotNamespace>
+      </plugin>
+    </gazebo>
+
+  
+</robot>
