@@ -24,14 +24,6 @@
         <arg name="use_sim_time" value="$(arg use_sim_time)"/>
         <arg name="headless" value="$(arg headless)"/>
     </include>
-    
-    <!-- Load the URDF with the given hardware interface into the ROS Parameter Server -->
-    <include file="$(find thesis)/launch/$(arg model)_upload_integration.launch">
-        <arg name="hardware_interface" value="$(arg hardware_interface)"/>
-        <arg name="robot_name" value="$(arg robot_name)" />
-    </include>
-    
-    
 
     <!-- Run a python script to send a service call to gazebo_ros to spawn a URDF robot -->
     <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
@@ -39,7 +31,7 @@
 
 
     <!-- add lf064 models -->
-    <include file="$(find thesis)/launch/add_lf064.launch">
+    <!--include file="$(find thesis)/launch/add_lf064.launch">
         <arg name="modelDir" value="$(arg modelDir)"/>
         <arg name="origin_xyz_01" value="'0.3 0.2 1'"/>
         <arg name="origin_xyz_02" value="'0.3 0.25 1'"/>
@@ -52,7 +44,7 @@
         <arg name="origin_rpy_04" value="'0 0 0'"/>
         <arg name="origin_rpy_05" value="'0 0 0'"/>
         <arg name="root_linkName" value="world"/>
-    </include>    
+    </include-->    
     
 
 </launch>
