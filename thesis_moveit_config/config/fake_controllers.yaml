@@ -11,3 +11,4 @@ controller_list:
   - name: fake_wsg50_gripper_controller
     joints:
       - wsg50_gripper_left_joint
+      - wsg50_gripper_right_joint

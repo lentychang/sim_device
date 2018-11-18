@@ -11,7 +11,7 @@
     <!-- |    controllers for the single joints, using the "trajectory" argument.            | -->
     <!-- ===================================================================================== -->
     
-    <arg name="sim" default="false"/>
+    <arg name="sim" default="true"/>
     <arg name="hardware_interface" default="PositionJointInterface" />
     <arg name="robot_name" default="iiwa" />
     <arg name="model" default="iiwa7"/>
@@ -22,19 +22,25 @@
         <arg name="hardware_interface" value="$(arg hardware_interface)"/>
         <arg name="robot_name" value="$(arg robot_name)" />
     </include>
+
     <!-- Loads the Gazebo world. -->
+    <!-- For simulaition, it will lunch a simulated hardware  -->
     <include file="$(find thesis)/launch/thesis_world.launch" if="$(arg sim)">
         <arg name="hardware_interface" value="$(arg hardware_interface)" />
         <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="model" value="$(arg model)" />
     </include>
 
-    <!-- For real robot  -->
+    <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gr.yaml" command="load" />
+    <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gl.yaml" command="load" />
+    <rosparam ns="$(arg robot_name)" command="load" file="$(find wsg_50_simulation)/urdf/wsg_50_dependent_joints.yaml"/>
+    <rosparam ns="$(arg robot_name)"> 
+      publishJointStates: true
+    </rosparam>
 
 
     <!-- Spawn controllers - it uses a JointTrajectoryController -->
     <group  ns="$(arg robot_name)" if="$(arg trajectory)">
-        
         <include file="$(find iiwa_control)/launch/iiwa_control.launch">
             <arg name="hardware_interface" value="$(arg hardware_interface)" />
             <arg name="controllers" value="
@@ -46,17 +52,12 @@
             <arg name="model" value="$(arg model)" />
         </include>
 
+        <!-- For real robot  -->
         <include file="$(find iiwa_hw)/launch/iiwa_hw.launch" unless="$(arg sim)">
             <arg name="hardware_interface" value="$(arg hardware_interface)" />
         </include>
     </group>
 
-    <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gr.yaml" command="load" />
-    <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gl.yaml" command="load" />
-    <rosparam ns="$(arg robot_name)" command="load" file="$(find wsg_50_simulation)/urdf/wsg_50_dependent_joints.yaml"/>
-    <rosparam ns="$(arg robot_name)"> 
-      publishJointStates: true
-    </rosparam>
     
     <!-- Spawn controllers - it uses an Effort Controller for each joint -->
     <group ns="$(arg robot_name)" unless="$(arg trajectory)">
@@ -94,10 +95,10 @@
   <!--node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" /-->
 
   <!-- Launch the fake driver to provide the same services that in the real gripper -->
-  <node name="wsg_50" pkg="wsg_50_simulation" type="wsg_50_sim_driver">
+  <!--node name="wsg_50" pkg="wsg_50_simulation" type="wsg_50_sim_driver">
         <param name = "vel_pub_l_Topic" type="string" value="/$(arg robot_name)/wsg_50_gl/command"/>
         <param name = "vel_pub_r_Topic" type="string" value="/$(arg robot_name)/wsg_50_gr/command"/>
-  </node>
+  </node-->
     
     
 </launch>

@@ -65,12 +65,14 @@
   <transmission name="${name}_base_trans_left">
      <type>transmission_interface/SimpleTransmission</type>
      <actuator name="${name}_base_motor_left">
-       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
+       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
        <mechanicalReduction>1</mechanicalReduction>
        <!--motorTorqueConstant>1</motorTorqueConstant-->
      </actuator>
      <joint name="${name}_gripper_left_joint">
-       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
+       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
      </joint>
   </transmission>
 
@@ -125,12 +127,14 @@
   <transmission name="${name}_base_trans_right">
      <type>transmission_interface/SimpleTransmission</type>
      <actuator name="${name}_base_motor_right">
-       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
+       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
        <mechanicalReduction>1</mechanicalReduction>
        <!--motorTorqueConstant>1</motorTorqueConstant-->
      </actuator>
      <joint name="${name}_gripper_right_joint">
-       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
+       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
      </joint>
   </transmission>
 	
