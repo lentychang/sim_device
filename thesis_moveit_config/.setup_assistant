@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:                                                                                                                                                                                             
+  URDF:
+    package: thesis
+    relative_path: urdf/iiwa7_integration.urdf.xacro
+    xacro_args: "--inorder "
+  SRDF:
+    relative_path: config/iiwa7.srdf
+  CONFIG:
+    author_name: Lenty Chang
+    author_email: lentychang@gmail.com
+    generated_timestamp: 1542451885
