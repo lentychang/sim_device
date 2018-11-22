@@ -21,8 +21,8 @@
   <!-- Launch the joint state publisher, necessary to define the gripper dependency relation -->
   <!--param name="use_gui" value="True"/-->
   <rosparam command="load" file="$(find wsg_50_simulation)/urdf/wsg_50_dependent_joints.yaml"/>
-  <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/-->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/> -->
   
   <!-- Launch the fake driver to provide the same services that in the real gripper -->
   <node name="wsg_50" pkg="wsg_50_simulation" type="wsg_50_sim_driver">

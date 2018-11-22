@@ -12,16 +12,16 @@ controller_list:
       - iiwa_joint_5
       - iiwa_joint_6
       - iiwa_joint_7
-  - name: iiwa/wsg_50_gl
-    action_ns: gripper_cmd
-    type:  GripperCommand
-    default: true
-    joints:
-      - wsg50_gripper_left_joint
+  # - name: iiwa/wsg_50_gl
+  #   action_ns: gripper_cmd
+  #   type:  GripperCommand
+  #   default: true
+  #   joints:
+  #     - wsg50_gripper_left_joint
 
-  - name: iiwa/wsg_50_gr
-    action_ns: gripper_cmd
-    type: GripperCommand
-    default: true
-    joints:
-      - wsg50_gripper_right_joint
+  # - name: iiwa/wsg_50_gr
+  #   action_ns: gripper_cmd
+  #   type: GripperCommand
+  #   default: true
+  #   joints:
+  #     - wsg50_gripper_right_joint

@@ -8,8 +8,8 @@
 <!-- finger_length: Length of finger from gripper base. (was 0.023) -->
 <!-- finger_tip:    Offset of finger tip along fingers' motion direction.
                     Use e.g. for single contact point tip on finger. (default 0) -->
-<xacro:macro name="wsg_50_xacro" params="name parent *origin">
 
+<xacro:macro name="wsg_50_xacro" params="name parent gripperHwInterface *origin">
  <joint name="${name}_anterior_gripper_joint" type="fixed">
     <xacro:insert_block name="origin"/>
     <parent link="${parent}"/>
@@ -65,14 +65,12 @@
   <transmission name="${name}_base_trans_left">
      <type>transmission_interface/SimpleTransmission</type>
      <actuator name="${name}_base_motor_left">
-       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
-       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+       <hardwareInterface>hardware_interface/${gripperHwInterface}</hardwareInterface>
        <mechanicalReduction>1</mechanicalReduction>
        <!--motorTorqueConstant>1</motorTorqueConstant-->
      </actuator>
      <joint name="${name}_gripper_left_joint">
-       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
-       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/${gripperHwInterface}</hardwareInterface>
      </joint>
   </transmission>
 
@@ -127,14 +125,12 @@
   <transmission name="${name}_base_trans_right">
      <type>transmission_interface/SimpleTransmission</type>
      <actuator name="${name}_base_motor_right">
-       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
-       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-       <mechanicalReduction>1</mechanicalReduction>
+        <hardwareInterface>hardware_interface/${gripperHwInterface}</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
        <!--motorTorqueConstant>1</motorTorqueConstant-->
      </actuator>
      <joint name="${name}_gripper_right_joint">
-       <!--hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface-->
-       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <hardwareInterface>hardware_interface/${gripperHwInterface}</hardwareInterface>
      </joint>
   </transmission>
 	
@@ -174,19 +170,19 @@
   </gazebo>
 
 
-<!--gazebo>
+<gazebo>
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
     <robotNamespace>/</robotNamespace>
   </plugin>
-</gazebo-->
+</gazebo>
 
-  <!--gazebo>
+  <gazebo>
     <controller:gazebo_ros_controller_manager name="gazebo_ros_controller_manager" plugin="libgazebo_ros_controller_manager.so">
       <alwaysOn>true</alwaysOn>
       <updateRate>1000.0</updateRate>
       <interface:audio name="gazebo_ros_controller_manager_dummy_iface" />
     </controller:gazebo_ros_controller_manager>
-  </gazebo-->
+  </gazebo>
 
 </xacro:macro>
 
