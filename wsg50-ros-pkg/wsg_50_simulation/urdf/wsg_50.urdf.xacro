@@ -170,7 +170,7 @@
   </gazebo>
 
 
-<gazebo>
+<!-- <gazebo>
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
     <robotNamespace>/</robotNamespace>
   </plugin>
@@ -182,7 +182,7 @@
       <updateRate>1000.0</updateRate>
       <interface:audio name="gazebo_ros_controller_manager_dummy_iface" />
     </controller:gazebo_ros_controller_manager>
-  </gazebo>
+  </gazebo> -->
 
 </xacro:macro>
 
