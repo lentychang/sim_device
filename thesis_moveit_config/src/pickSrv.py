@@ -52,6 +52,7 @@ import moveit_msgs.msg
 from geometry_msgs.msg import PoseStamped, TransformStamped, Pose, Transform
 from math import pi
 from std_msgs.msg import String, Float64
+from std_srvs.srv import Empty, EmptyRequest, EmptyResponse
 from moveit_commander.conversions import pose_to_list
 from moveit_msgs.msg import Grasp
 from thesis_msgs.srv import GripSrv, GripSrvRequest, GripSrvResponse
@@ -60,12 +61,19 @@ from wsg_50_common.srv import Move, MoveRequest, MoveResponse
 from moveit_msgs.msg import OrientationConstraint, Constraints
 from math import pi
 from copy import deepcopy
+import wsg_gcl_socket
 
 
+sim_ = False
 
-
-gl_pub = rospy.Publisher('/iiwa/wsg_50_gl/command', Float64)
-gr_pub = rospy.Publisher('/iiwa/wsg_50_gr/command', Float64)
+if sim_:
+    gl_pub = rospy.Publisher('/iiwa/wsg_50_gl/command', Float64)
+    gr_pub = rospy.Publisher('/iiwa/wsg_50_gr/command', Float64)
+else:
+    gripper_socker_ = wsg_gcl_socket.Wsg50Gcl_Socket()
+    gripper_socker_.connect()
+    gripper_socker_.homing()
+    
 
 
 def rotate_orientation(ori, q):
@@ -76,6 +84,7 @@ def rotate_orientation(ori, q):
     ori.z = pose_rot[2]
     ori.w = pose_rot[3]
     return ori
+
 
 def translate_position(pos, t):
     pos.x += t.x
@@ -95,13 +104,31 @@ def list2Transform(xyzrpy):
     return transform
 
 
-def gripperMove(width):
-    open = width / 2.0
-    rCommand = open/1000.0
-    lCommand = -1.0 * rCommand
-    gl_pub.publish(lCommand)
-    gr_pub.publish(rCommand)
-    rospy.sleep(3.0)
+def grip(force=None, width=None, speed=None):
+    if sim_:
+        if width is None:
+            width = 0
+            open = width / 2.0
+        rCommand = open/1000.0
+        lCommand = -1.0 * rCommand
+        gl_pub.publish(lCommand)
+        gr_pub.publish(rCommand)
+        rospy.sleep(3.0)
+    else:
+        gripper_socker_.grip(force=force, width=width, speed=speed)
+
+
+def release(pullback_dist=None, speed=None):
+    if sim_:
+        if pullback_dist is None:
+            pullback_dist = 55
+        rCommand = pullback_dist
+        lCommand = -1.0 * rCommand
+        gl_pub.publish(lCommand)
+        gr_pub.publish(rCommand)
+        rospy.sleep(3.0)
+    else:
+        gripper_socker_.release(pullback_dist=pullback_dist, speed=speed)
 
 
 def all_close(goal, actual, tolerance):
@@ -395,22 +422,20 @@ class GripperInterface(object):
         self.set_pose_goal(self.__preGraspPose)
         print(self.__preGraspPose)
         self.go_to_goal()
-        gripperMove(110)
+        release()
         self.set_pose_goal(self.__graspPose)
         print(self.__graspPose)
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
         # close gripper
-        gripperMove(0)
-        gripperMove(110)
-
+        grip()
+        release()
 
         self.set_pose_goal(self.__preGraspPose)
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
 
         self.__first_grasp = False
-    
     def resetAll(self):
         self.__graspPathOriConstraint = OrientationConstraint()
         self.__graspPathConstraints = Constraints()
@@ -434,12 +459,12 @@ class GripperInterface(object):
         self.setGripObj()
         self.set_pose_goal(self.__preGraspPose)
         self.go_to_goal()
-        gripperMove(110)
+        release()
         self.set_pose_goal(self.__graspPose)
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
         # close gripper
-        gripperMove(0)
+        grip()
         rospy.sleep(1.0)
         self.set_pose_goal(self.__preGraspPose)
         self.set_path_ori_constraints([self.__graspPose])
@@ -505,7 +530,7 @@ class GripperInterface(object):
 gripGrp = GripperInterface()
 modelList = ["lf064-01", "lf064-02", "lf064-03", "lf064-04", "lf064-05"]
 
-    
+
 
 def gripSrvCb(req):
     resp = GripSrvResponse()
@@ -531,11 +556,34 @@ def gripSrvCb(req):
     rospy.loginfo("pick service finished")
     return resp
 
-def gripServer():
-    rospy.init_node('pickSrv')
+
+def homingSrvCb(req):
+    gripper_socker_.homing()
+    return {'sucecss': True}
+
+def gripSrvCb(req):
+    gripper_socker_.grip()
+    return {'sucecss': True}
+
+def releaseSrvCb(req):
+    gripper_socker_.release()
+    return {'sucecss': True}
+
+def ackSrvCb(req):
+    gripper_socker_.ack_fast_stop()
+    return {'sucecss': True}
+
+def gripperServer():
+    rospy.init_node('gripperSrv')
     s = rospy.Service('pickSrv', GripSrv, gripSrvCb)
 
-    print("Service Server is launched!")
+    if not sim_:
+        homingSrv = rospy.Service('homingSrv', Empty, homingSrvCb)
+        gripSrv = rospy.Service('gripSrv', Empty, gripSrvCb)
+        releaseSrv = rospy.Service('releaseSrv', Empty, releaseSrvCb)
+        ackSrv = rospy.Service('ackSrv', Empty, ackSrvCb)
+
+    print("Service Servers are launched!")
     rospy.spin()
 
 
@@ -563,4 +611,6 @@ def gripServer():
 
 if __name__ == '__main__':
   # main()
-  gripServer()
+    if len(sys.argv) > 1:
+        sim_ = sys.argv[1]
+    gripperServer()
