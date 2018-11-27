@@ -17,7 +17,7 @@ Folders wsg50, iiwa_stack, and depth sensor are modified from other open source 
     - toplevel launch file in `thesis` repository is modified from iiwa_gazebo.launch
 - wsg50_ros_pkgs
     - wsg_50_drive didn't work for me, probably I changed urdf file before.
-    - I use tcp/ip connection to send command(GCL) directly to gripper. See python code `thesis_moveit_config/wsg_gcl_socket.py`
+    - I use tcp/ip connection to send command([GCL](https://www.weiss-robotics.com/wp-content/uploads/wsg_gcl_reference_manual-4-0-0.pdf)) directly to gripper. See python code `thesis_moveit_config/wsg_gcl_socket.py`
 
 
 ### Env
