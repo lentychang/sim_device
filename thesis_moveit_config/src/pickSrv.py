@@ -43,10 +43,10 @@
 ## We also import `rospy`_ and some messages that we will use:
 ##
 
-import ipdb
 import sys
 import copy
 import rospy
+import pdb
 import moveit_commander
 import moveit_msgs.msg
 from geometry_msgs.msg import PoseStamped, TransformStamped, Pose, Transform
@@ -117,6 +117,17 @@ def grip(force=None, width=None, speed=None):
     else:
         gripper_socker_.grip(force=force, width=width, speed=speed)
 
+
+def move(width=100, speed=None):
+    if sim_:
+        open = width / 2.0
+        rCommand = open/1000.0
+        lCommand = -1.0 * rCommand
+        gl_pub.publish(lCommand)
+        gr_pub.publish(rCommand)
+        rospy.sleep(3.0)
+    else:
+        gripper_socker_.move(width=width, speed=speed)
 
 def release(pullback_dist=None, speed=None):
     if sim_:
@@ -224,7 +235,7 @@ class GripperInterface(object):
         # q = quaternion_from_euler(0,0,0)
         # r,p,y = euler_from_quaternion(q)
     def __setupRelDict(self):
-        self.__preLocGraspRel_1 = {'lf064-01': list2Transform([0,0,0.05,0,0,0]), 
+        self.__preLocGraspRel_1 = {'lf064-01': list2Transform([0,0,0.1,0,0,0]), 
                                    'lf064-02': list2Transform([0.1,0,0.05,0,0,pi/2]), 
                                    'lf064-03': list2Transform([0,0,0,0,0,0]), 
                                    'lf064-04': list2Transform([0,0,0,0,0,0]), 
@@ -236,7 +247,7 @@ class GripperInterface(object):
                                 'lf064-04': list2Transform([0,0,0,0,0,0]), 
                                 'lf064-05': list2Transform([0,0,0,0,0,0])}
         # Check why the angle should be half??
-        self.__preLocGraspRel_2 = {'lf064-01': list2Transform([0.1,0,0.05,0,0,pi/4]), 
+        self.__preLocGraspRel_2 = {'lf064-01': list2Transform([0.1,0,0.1,0,0,pi/4]), 
                                    'lf064-02': list2Transform([0,0,0,0,0,0]), 
                                    'lf064-03': list2Transform([0,0,0,0,0,0]), 
                                    'lf064-04': list2Transform([0,0,0,0,0,0]), 
@@ -260,6 +271,22 @@ class GripperInterface(object):
                            'lf064-03': list2Transform([0,0,0,0,0,0]), 
                            'lf064-04': list2Transform([0,0,0,0,0,0]), 
                            'lf064-05': list2Transform([0,0,0,0,0,0])}
+
+    def goalReached(self, tol_lin=0.005, tol_ang=0.005):
+        current_pose = self.group.get_current_pose()
+        if (abs(current_pose.pose.position.x - self.__pose_goal.pose.position.x) >= tol_lin or
+           abs(current_pose.pose.position.y - self.__pose_goal.pose.position.y) >= tol_lin or
+           abs(current_pose.pose.position.z - self.__pose_goal.pose.position.z) >= tol_lin or
+           abs(current_pose.pose.orientation.w - self.__pose_goal.pose.orientation.w) >= tol_ang):
+        #    print("\n######\nCurrent:\n{0}\nGoal:\n{1}\n######\n".format(current_pose,self.__pose_goal))
+           return False
+        else:
+            return True
+    def wait_till_goal(self, sleep=0.5):
+        while not self.goalReached():
+            print("Goal is not yet reached!")
+            rospy.sleep(sleep)
+        print("Goal reached!")
 
     def setSrvReq(self, req):
         self.__srvReq = req
@@ -300,7 +327,7 @@ class GripperInterface(object):
         self.__preGraspPose.header.frame_id = "world"
         self.__preGraspPose.pose.position = translate_position(position, translation)
         self.__preGraspPose.pose.orientation = rotate_orientation(orientation, rotation)
-        print("pregraspPose: {0}\n".format(self.__preGraspPose))
+        # print("pregraspPose: {0}\n".format(self.__preGraspPose))
 
 
         
@@ -326,7 +353,7 @@ class GripperInterface(object):
         self.__graspPose.header.frame_id = "world"
         self.__graspPose.pose.position = translate_position(position, translation)
         self.__graspPose.pose.orientation = rotate_orientation(orientation, rotation)
-        print("graspPose: {0}\n".format(self.__graspPose))
+        # print("graspPose: {0}\n".format(self.__graspPose))
 
     def set_path_ori_constraints(self, stampedPoseList):
         # self.__graspPathOriConstraint.orientation = self.pose.__preGraspPose.orientation
@@ -383,15 +410,16 @@ class GripperInterface(object):
     def set_pose_goal(self, pose):
         self.__pose_goal = pose
 
-    def go_to_goal(self):
+    def go_to_goal(self, must_arrive_goal=True):
         ## Planning to a Pose Goal
         ## We can plan a motion for this group to a desired pose for the end-effector
         self.group.set_pose_target(self.__pose_goal)
-        self.group.set_goal_tolerance(0.005)
+        self.group.set_goal_tolerance(0.002)
         #self.group.set_path_constraints(self.__graspPathConstraints)
 
         ## Plan and execute
         plan = self.group.go(wait=True)
+        
         # Calling `stop()` ensures that there is no residual movement
         self.group.stop()
         # It is always good to clear your targets after planning with poses.
@@ -420,20 +448,25 @@ class GripperInterface(object):
 
         self.setGripObj()
         self.set_pose_goal(self.__preGraspPose)
-        print(self.__preGraspPose)
+        # print(self.__preGraspPose)
         self.go_to_goal()
-        release()
+        self.wait_till_goal()
+
         self.set_pose_goal(self.__graspPose)
-        print(self.__graspPose)
+        # print(self.__graspPose)
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
+        self.wait_till_goal()
+    
         # close gripper
+        move(20)
         grip()
         release()
-
+        move(100)
         self.set_pose_goal(self.__preGraspPose)
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
+        self.wait_till_goal()
 
         self.__first_grasp = False
     def resetAll(self):
@@ -459,7 +492,7 @@ class GripperInterface(object):
         self.setGripObj()
         self.set_pose_goal(self.__preGraspPose)
         self.go_to_goal()
-        release()
+        move(100)
         self.set_pose_goal(self.__graspPose)
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
@@ -469,7 +502,6 @@ class GripperInterface(object):
         self.set_pose_goal(self.__preGraspPose)
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
-
 
 
     def plan_cartesian_path(self, scale=1):
@@ -598,9 +630,9 @@ def gripperServer():
 #     frame_id: 'world'
 #   pose:
 #     position:
-#       x: -0.6
-#       y: 0.2
-#       z: 1.4
+#       x: -0.55
+#       y: 0.15
+#       z: 1.6
 #     orientation:
 #       x: 1
 #       y: 0
@@ -611,6 +643,8 @@ def gripperServer():
 
 if __name__ == '__main__':
   # main()
-    if len(sys.argv) > 1:
+    if len(sys.argv) == 2:
         sim_ = sys.argv[1]
+    elif len(sys.argv) == 3:
+        sim_ = False
     gripperServer()
