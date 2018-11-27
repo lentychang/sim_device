@@ -532,7 +532,7 @@ modelList = ["lf064-01", "lf064-02", "lf064-03", "lf064-04", "lf064-05"]
 
 
 
-def gripSrvCb(req):
+def pickSrvCb(req):
     resp = GripSrvResponse()
     resp.success = False
     rospy.loginfo("Srv moveGrpSrv recieved the request")
@@ -575,7 +575,7 @@ def ackSrvCb(req):
 
 def gripperServer():
     rospy.init_node('gripperSrv')
-    s = rospy.Service('pickSrv', GripSrv, gripSrvCb)
+    s = rospy.Service('pickSrv', GripSrv, pickSrvCb)
 
     if not sim_:
         homingSrv = rospy.Service('homingSrv', Empty, homingSrvCb)
