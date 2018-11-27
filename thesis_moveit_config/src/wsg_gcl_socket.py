@@ -45,7 +45,6 @@ class Wsg50Gcl_Socket():
         time.sleep(wait)
         self.__msg = self.socketClient.recv(4096)
         printInfo("Msg received:")
-        print(self.__msg)
         printInfo(self.__msg, *args)
 
     def homing(self):
@@ -134,6 +133,17 @@ class Wsg50Gcl_Socket():
             printErr("keyword arg Error")
         else:
             printErr("Unexpected Error")
+    def move(self, width=55, speed=None):
+        if width > 0 and width <= 110:
+            if speed is None:
+                self.__sendCommand("MOVE({0})".format(width))
+            else:
+                if speed > 0 and speed < 200:
+                    self.__sendCommand("MOVE({0},{1})".format(width,speed))
+                else:
+                    printErr("speed out of range, it should between 0-200")
+        else:
+            printErr("position out of range, it should be between 0-55 mm")
 
 
 if __name__ == "__main__":
