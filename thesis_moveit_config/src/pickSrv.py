@@ -235,57 +235,94 @@ class GripperInterface(object):
         # q = quaternion_from_euler(0,0,0)
         # r,p,y = euler_from_quaternion(q)
     def __setupRelDict(self):
-        self.__preLocGraspRel_1 = {'lf064-01': list2Transform([0,0,0.1,0,0,0]), 
-                                   'lf064-02': list2Transform([0.1,0,0.05,0,0,pi/2]), 
-                                   'lf064-03': list2Transform([0,0,0,0,0,0]), 
-                                   'lf064-04': list2Transform([0,0,0,0,0,0]), 
-                                   'lf064-05': list2Transform([0,0,0,0,0,0])}
+        h1 = 0.040 # fingerBottomToEefJoint
+        h0 = h1 + 0.1 # pregrasp height
 
-        self.__locGraspRel_1 = {'lf064-01': list2Transform([0,0,0,0,0,0]), 
-                                'lf064-02': list2Transform([0,0,0,0,0,0]), 
-                                'lf064-03': list2Transform([0,0,0,0,0,0]), 
-                                'lf064-04': list2Transform([0,0,0,0,0,0]), 
-                                'lf064-05': list2Transform([0,0,0,0,0,0])}
-        # Check why the angle should be half??
-        self.__preLocGraspRel_2 = {'lf064-01': list2Transform([0.1,0,0.1,0,0,pi/4]), 
-                                   'lf064-02': list2Transform([0,0,0,0,0,0]), 
-                                   'lf064-03': list2Transform([0,0,0,0,0,0]), 
-                                   'lf064-04': list2Transform([0,0,0,0,0,0]), 
-                                   'lf064-05': list2Transform([0,0,0,0,0,0])}
+        locGraspList_1 = [[0,0.04,h1,0,0,0],
+                          [0,0,h1,0,0,0],
+                          [0,0.01,h1,0,0,pi/4],
+                          [0,0,h1,0,0,0],
+                          [0,0.041,h1,0,0,0]]
+        locPreGraspList_1 = deepcopy(locGraspList_1)
+        for i in locPreGraspList_1:
+            i[2] = h0
+
+        locGraspList_2 = [[0,0.04,h1,0,0,pi/4], # finger width must be smaller than 25mm
+                          [0,0,h1,0,0,pi/4],
+                          [0,0,h1,0,0,pi/4], # Not possible to grip
+                          [0,0,h1,0,0,pi/4],
+                          [0,0.0325,h1,0,0,pi/4]] # finger width must be smaller than 15mm
+        locPreGraspList_2 = deepcopy(locGraspList_2)
+        for i in locPreGraspList_2:
+            i[2] = h0
+        
+        self.__locGraspRel_1 = {'lf064-01': list2Transform(locGraspList_1[0]), 
+                                'lf064-02': list2Transform(locGraspList_1[1]), 
+                                'lf064-03': list2Transform(locGraspList_1[2]), 
+                                'lf064-04': list2Transform(locGraspList_1[3]), 
+                                'lf064-05': list2Transform(locGraspList_1[4])}
+
+        self.__preLocGraspRel_1 = {'lf064-01': list2Transform(locPreGraspList_1[0]), 
+                                   'lf064-02': list2Transform(locPreGraspList_1[1]), 
+                                   'lf064-03': list2Transform(locPreGraspList_1[2]), 
+                                   'lf064-04': list2Transform(locPreGraspList_1[3]), 
+                                   'lf064-05': list2Transform(locPreGraspList_1[4])}
+
+        # [TODO] Check why the angle should be half??
+        self.__preLocGraspRel_2 = {'lf064-01': list2Transform(locPreGraspList_2[0]), 
+                                   'lf064-02': list2Transform(locPreGraspList_2[1]), 
+                                   'lf064-03': list2Transform(locPreGraspList_2[2]), 
+                                   'lf064-04': list2Transform(locPreGraspList_2[3]), 
+                                   'lf064-05': list2Transform(locPreGraspList_2[4])}
 
 
-        self.__locGraspRel_2 = {'lf064-01': list2Transform([0.1,0,0.0,0,0,pi/4]), 
-                                'lf064-02': list2Transform([0,0,0,0,0,0]), 
-                                'lf064-03': list2Transform([0,0,0,0,0,0]), 
-                                'lf064-04': list2Transform([0,0,0,0,0,0]), 
-                                'lf064-05': list2Transform([0,0,0,0,0,0])}
+        self.__locGraspRel_2 = {'lf064-01': list2Transform(locGraspList_2[0]), 
+                                'lf064-02': list2Transform(locGraspList_2[1]), 
+                                'lf064-03': list2Transform(locGraspList_2[2]), 
+                                'lf064-04': list2Transform(locGraspList_2[3]), 
+                                'lf064-05': list2Transform(locGraspList_2[4])}
 
-        self.__preGraspRel = {'lf064-01': list2Transform([0,0,0.05,0,0,0]), 
-                              'lf064-02': list2Transform([0,0,0,0,0,0]), 
-                              'lf064-03': list2Transform([0,0,0,0,0,0]), 
-                              'lf064-04': list2Transform([0,0,0,0,0,0]), 
-                              'lf064-05': list2Transform([0,0,0,0,0,0])}
-
-        self.__GraspRel = {'lf064-01': list2Transform([0,0,0.05,0,0,0]), 
-                           'lf064-02': list2Transform([0,0,0,0,0,0]), 
-                           'lf064-03': list2Transform([0,0,0,0,0,0]), 
-                           'lf064-04': list2Transform([0,0,0,0,0,0]), 
-                           'lf064-05': list2Transform([0,0,0,0,0,0])}
+        # Real grasp position
+        self.__preGraspRel = self.__preLocGraspRel_1
+        self.__GraspRel = self.__locGraspRel_1
 
     def goalReached(self, tol_lin=0.005, tol_ang=0.005):
         current_pose = self.group.get_current_pose()
-        if (abs(current_pose.pose.position.x - self.__pose_goal.pose.position.x) >= tol_lin or
-           abs(current_pose.pose.position.y - self.__pose_goal.pose.position.y) >= tol_lin or
-           abs(current_pose.pose.position.z - self.__pose_goal.pose.position.z) >= tol_lin or
-           abs(current_pose.pose.orientation.w - self.__pose_goal.pose.orientation.w) >= tol_ang):
+        diff_lin_x = abs(current_pose.pose.position.x - self.__pose_goal.pose.position.x)
+        diff_lin_y = abs(current_pose.pose.position.y - self.__pose_goal.pose.position.y) 
+        diff_lin_z = abs(current_pose.pose.position.z - self.__pose_goal.pose.position.z)
+
+        diff_ang_w = abs(current_pose.pose.orientation.w - self.__pose_goal.pose.orientation.w)
+        diff_ang_x = abs(current_pose.pose.orientation.x - self.__pose_goal.pose.orientation.x)
+        diff_ang_y = abs(current_pose.pose.orientation.y - self.__pose_goal.pose.orientation.y)
+        diff_ang_z = abs(current_pose.pose.orientation.z - self.__pose_goal.pose.orientation.z)
+
+        # diff_list = [diff_lin_x, diff_lin_y, diff_lin_z, diff_ang_w, diff_ang_x, diff_ang_y, diff_ang_z]
+        diff_list = [diff_lin_x, diff_lin_y, diff_lin_z]
+        max_diff = max(diff_list)
+        max_diff_idx = diff_list.index(max_diff)
+        diff_name_list = ["diff_lin_x", "diff_lin_y", "diff_lin_z", "diff_ang_w", "diff_ang_x", "diff_ang_y", "diff_ang_z"]
+
+        rospy.loginfo("Max diff between goal and current pose comes from: {0}\n diff value:{1}\n\n".format(diff_name_list[max_diff_idx], max_diff))
+
+        if ( diff_lin_x >= tol_lin or
+             diff_lin_y >= tol_lin or
+             diff_lin_z >= tol_lin or
+             diff_ang_w >= tol_ang or
+             diff_ang_x >= tol_ang or
+             diff_ang_y >= tol_ang or
+             diff_ang_z >= tol_ang):
         #    print("\n######\nCurrent:\n{0}\nGoal:\n{1}\n######\n".format(current_pose,self.__pose_goal))
            return False
         else:
             return True
-    def wait_till_goal(self, sleep=0.5):
-        while not self.goalReached():
-            print("Goal is not yet reached!")
+    def wait_till_goal(self, sleep=0.5, time_out=10):
+        print("Goal is not yet reached!")
+        n_thres = time_out/sleep
+        n = 0
+        while not self.goalReached() and n < n_thres:
             rospy.sleep(sleep)
+            n += 1
         print("Goal reached!")
 
     def setSrvReq(self, req):
@@ -327,7 +364,7 @@ class GripperInterface(object):
         self.__preGraspPose.header.frame_id = "world"
         self.__preGraspPose.pose.position = translate_position(position, translation)
         self.__preGraspPose.pose.orientation = rotate_orientation(orientation, rotation)
-        # print("pregraspPose: {0}\n".format(self.__preGraspPose))
+        print("pregraspPose: {0}\n".format(self.__preGraspPose))
 
 
         
@@ -353,7 +390,7 @@ class GripperInterface(object):
         self.__graspPose.header.frame_id = "world"
         self.__graspPose.pose.position = translate_position(position, translation)
         self.__graspPose.pose.orientation = rotate_orientation(orientation, rotation)
-        # print("graspPose: {0}\n".format(self.__graspPose))
+        print("graspPose: {0}\n".format(self.__graspPose))
 
     def set_path_ori_constraints(self, stampedPoseList):
         # self.__graspPathOriConstraint.orientation = self.pose.__preGraspPose.orientation
@@ -362,7 +399,7 @@ class GripperInterface(object):
         for stampedPose in stampedPoseList:
             constraint = OrientationConstraint()
             constraint.header = stampedPose.header
-            constraint.orientation = stampedPose.pose.orientation
+            constraint.orientation = deepcopy(stampedPose.pose.orientation)
             constraint.link_name = "world"
             constraint.absolute_x_axis_tolerance = 0.05
             constraint.absolute_y_axis_tolerance = 0.05
@@ -415,7 +452,8 @@ class GripperInterface(object):
         ## We can plan a motion for this group to a desired pose for the end-effector
         self.group.set_pose_target(self.__pose_goal)
         self.group.set_goal_tolerance(0.002)
-        #self.group.set_path_constraints(self.__graspPathConstraints)
+        self.group.set_path_constraints(self.__graspPathConstraints)
+        print(self.group.get_path_constraints())
 
         ## Plan and execute
         plan = self.group.go(wait=True)
@@ -576,10 +614,12 @@ def pickSrvCb(req):
         rospy.logwarn("Given model is not in the list")
 
     if req.is_loc_grasp:
+        rospy.loginfo("[PickSrv] Localization Grasp")
         gripGrp.localization_grasp()
         gripGrp.localization_grasp()
 
     else:
+        rospy.loginfo("[PickSrv] Real Grasp")
         gripGrp.real_grasp()
 
     gripGrp.resetAll()
@@ -591,19 +631,23 @@ def pickSrvCb(req):
 
 def homingSrvCb(req):
     gripper_socker_.homing()
-    return {'sucecss': True}
+    rospy.loginfo("[Gripper] Homing")
+    return EmptyResponse()
 
 def gripSrvCb(req):
     gripper_socker_.grip()
-    return {'sucecss': True}
+    rospy.loginfo("[Gripper] Gripped")
+    return EmptyResponse()
 
 def releaseSrvCb(req):
     gripper_socker_.release()
-    return {'sucecss': True}
+    rospy.loginfo("[Gripper] Released")
+    return EmptyResponse()
 
 def ackSrvCb(req):
     gripper_socker_.ack_fast_stop()
-    return {'sucecss': True}
+    rospy.loginfo("[Gripper] Fast stop error acknowledged")
+    return EmptyResponse()
 
 def gripperServer():
     rospy.init_node('gripperSrv')
@@ -644,7 +688,7 @@ def gripperServer():
 if __name__ == '__main__':
   # main()
     if len(sys.argv) == 2:
-        sim_ = sys.argv[1]
-    elif len(sys.argv) == 3:
-        sim_ = False
+        sim_ = sys.argv[1].lower() in ["true", "t", "yes"]
+    elif len(sys.argv) >= 3:
+        rospy.logwarn("Only first argument is used")
     gripperServer()
