@@ -50,7 +50,8 @@ class MarkersManipulation:
         self.markerArray.markers.append(marker)
         print "added model: " + modelname
         self.addedModelList.append(modelname)
-    
 
+
+# useless service
 if __name__ == "__main__":
     marker_mani = MarkersManipulation()
