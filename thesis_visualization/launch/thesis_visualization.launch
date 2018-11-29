@@ -5,9 +5,9 @@
         <arg name="modelDir" default="/root/exchange/tempData"/>
 
         <!--a fake node that publish fake object recognition results-->
-        <node name="fake_recognition_publisher" pkg="thesis_visualization" type="fakeObjPublisher.py" 
+        <!-- <node name="fake_recognition_publisher" pkg="thesis_visualization" type="fakeObjPublisher.py" 
               output="screen" respawn="false" args="$(arg cameraFrame) $(arg pubTopic_detectedObjs_beforeAligned)">
-        </node>
+        </node> -->
 
         <!--First MarkerArray node: for publishing aligned models-->
         <arg name="subTopic_detectedObjs_beforeAligned" default="/detectedObjs_beforeAligned"/>
