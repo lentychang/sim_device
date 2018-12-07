@@ -33,7 +33,7 @@ class FakeRecPublisher:
         n = len(self.msg.modelList)
         t_stamp = rospy.Time.now()
         self.msg.headers = [std_msgs.msg.Header()] * n
-        for i in range(0,len(self.fakeHeaders)):
+        for i in range(0,len(self.msg.modelList)):
             self.msg.headers[i].stamp=t_stamp
             self.msg.headers[i].frame_id = "world"
     def pubOnce(self):
