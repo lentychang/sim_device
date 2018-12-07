@@ -12,6 +12,7 @@ from numpy import ndarray
 import sys
 import random
 from math import pi
+from fakeRecPublisher import FakeRecPublisher
 
 
 class GazeboModelCli():
@@ -28,6 +29,7 @@ class GazeboModelCli():
         self.modelsInBin = [1, 2, 2, 2, 2, 3, 4, 5]
         self.modelXmlList = []
         self.added_models = []
+        self.modelsPoses = []
         for i in xrange(1, 6):
             modelName = "lf0640" + str(i)
             with open(os.path.join(self.urdfDir, modelName + ".urdf"), "r") as f:
@@ -59,6 +61,7 @@ class GazeboModelCli():
             info = "Add model: '" + str(self.req.model_name), "' at : " + str(self.req.initial_pose) + "(xyz,quaternion) succeed!"
             rospy.loginfo(info)
             self.added_models.append(self.req.model_name)
+            self.modelsPoses.append(self.req.initial_pose)
         else:
             status_message = "Add model failed"
             rospy.logwarn(status_message)
@@ -130,10 +133,14 @@ class GazeboModelCli():
 
 
 gazeboModelCli = GazeboModelCli()
+fakeRecPub = FakeRecPublisher()
 
 
 def addModelSrvCb(req):
-    return gazeboModelCli.add_one_model()
+    resp = gazeboModelCli.add_one_model()
+    fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.modelsPoses)
+    fakeRecPub.pubOnce()
+    return resp
 
 
 def delModelSrvCb(req):

@@ -27,11 +27,12 @@
 
     <!-- Loads the Gazebo world. -->
     <!-- For simulaition, it will lunch a simulated hardware  -->
-    <include file="$(find thesis)/launch/thesis_world.launch" if="$(arg sim)">
+    <include if="$(arg sim)" file="$(find thesis)/launch/thesis_world.launch">
         <arg name="hardware_interface" value="$(arg hardware_interface)" />
         <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="model" value="$(arg model)" />
     </include>
+    <node if="$(arg sim)" name="gazeboModelManager" pkg="thesis" type="gazeboModelManagerSrv.py" respawn="false" output="screen"/>
 
     <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gr.yaml" command="load" />
     <rosparam ns="$(arg robot_name)" file="$(find wsg_50_simulation)/controllers/wsg_50_gl.yaml" command="load" />
@@ -80,7 +81,6 @@
             <arg name="model" value="$(arg model)" />
         </include>
     </group>
-
   <!-- Kinect2 controller-->
   <!--rosparam file="$(find kinect_control)/config/kinect_control.yaml"
             command="load"/-->
