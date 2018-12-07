@@ -131,7 +131,7 @@ class GazeboModelCli():
     def srvIsDone(self):
         return True if len(self.modelsInBin) else False
 
-
+rospy.init_node("addModelSrv")
 gazeboModelCli = GazeboModelCli()
 fakeRecPub = FakeRecPublisher()
 
@@ -160,7 +160,6 @@ def delAllModelSrvCb(req):
 
 if __name__ == '__main__':
     # wait for all servers
-    rospy.init_node("addModelSrv")
     s = rospy.Service('/addModelSrv', Trigger, addModelSrvCb)
     d = rospy.Service('/delModelSrv', Trigger, delModelSrvCb)
     d = rospy.Service('/delAllModelSrv', Trigger, delAllModelSrvCb)
