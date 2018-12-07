@@ -73,8 +73,8 @@ elif len(sys.argv) >= 3:
     print("Only first argument is used")
 
 if sim_:
-    gl_pub = rospy.Publisher('/iiwa/wsg_50_gl/command', Float64)
-    gr_pub = rospy.Publisher('/iiwa/wsg_50_gr/command', Float64)
+    gl_pub = rospy.Publisher('/iiwa/wsg_50_gl/command', Float64, queue_size=1)
+    gr_pub = rospy.Publisher('/iiwa/wsg_50_gr/command', Float64, queue_size=1)
 else:
     gripper_socker_ = wsg_gcl_socket.Wsg50Gcl_Socket()
     gripper_socker_.connect()
