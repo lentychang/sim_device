@@ -7,8 +7,8 @@
   </node>
 
 
-  <!--<node name="pickSrv" pkg="thesis_moveit_config" type="pickSrv.py" respawn="true" output="screen" args="$(arg sim)">
+  <node name="pickSrv" pkg="thesis_moveit_config" type="pickSrv.py" respawn="true" output="screen" args="$(arg sim)">
     <remap from="/joint_states" to="/iiwa/joint_states"/>
-  </node> -->
+  </node>
 
 </launch>
