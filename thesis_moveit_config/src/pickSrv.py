@@ -46,7 +46,7 @@
 import sys
 import copy
 import rospy
-import pdb
+import ipdb
 import moveit_commander
 import moveit_msgs.msg
 from geometry_msgs.msg import PoseStamped, TransformStamped, Pose, Transform
@@ -65,6 +65,12 @@ import wsg_gcl_socket
 
 
 sim_ = False
+
+if len(sys.argv) == 2:
+    sim_ = sys.argv[1].lower() in ["true", "t", "yes"]
+elif len(sys.argv) >= 3:
+    sim_ = sys.argv[1].lower() in ["true", "t", "yes"]
+    print("Only first argument is used")
 
 if sim_:
     gl_pub = rospy.Publisher('/iiwa/wsg_50_gl/command', Float64)
@@ -224,7 +230,7 @@ class GripperInterface(object):
         self.eef_link = eef_link
         self.group_names = group_names
         self.__setupRelDict()
-        self.__graspPathOriConstraint = OrientationConstraint()
+        self.__graspPathOriConstraints = []
         self.__graspPathConstraints = Constraints()
         self.__first_grasp = True
         self.__srvReq_is_set = False
@@ -286,32 +292,50 @@ class GripperInterface(object):
         self.__preGraspRel = self.__preLocGraspRel_1
         self.__GraspRel = self.__locGraspRel_1
 
-    def goalReached(self, tol_lin=0.005, tol_ang=0.005):
+    def goalReached(self, tol_lin=0.005, tol_ang=0.008):
         current_pose = self.group.get_current_pose()
         diff_lin_x = abs(current_pose.pose.position.x - self.__pose_goal.pose.position.x)
         diff_lin_y = abs(current_pose.pose.position.y - self.__pose_goal.pose.position.y) 
         diff_lin_z = abs(current_pose.pose.position.z - self.__pose_goal.pose.position.z)
+        # ipdb.set_trace()
 
-        diff_ang_w = abs(current_pose.pose.orientation.w - self.__pose_goal.pose.orientation.w)
-        diff_ang_x = abs(current_pose.pose.orientation.x - self.__pose_goal.pose.orientation.x)
-        diff_ang_y = abs(current_pose.pose.orientation.y - self.__pose_goal.pose.orientation.y)
-        diff_ang_z = abs(current_pose.pose.orientation.z - self.__pose_goal.pose.orientation.z)
+        # diff_ang_w = abs(current_pose.pose.orientation.w - self.__pose_goal.pose.orientation.w)
+        # diff_ang_x = abs(current_pose.pose.orientation.x - self.__pose_goal.pose.orientation.x)
+        # diff_ang_y = abs(current_pose.pose.orientation.y - self.__pose_goal.pose.orientation.y)
+        # diff_ang_z = abs(current_pose.pose.orientation.z - self.__pose_goal.pose.orientation.z)
+
+        current_q = [current_pose.pose.orientation.x,
+                     current_pose.pose.orientation.y,
+                     current_pose.pose.orientation.z,
+                     current_pose.pose.orientation.w]
+        goal_q = [self.__pose_goal.pose.orientation.x,
+                  self.__pose_goal.pose.orientation.y,
+                  self.__pose_goal.pose.orientation.z,
+                  self.__pose_goal.pose.orientation.w]
+        current_rpy = euler_from_quaternion(current_q)
+        goal_rpy = euler_from_quaternion(goal_q)
+
+        diff_rpy = [abs(current_rpy[i] - goal_rpy[i]) for i in range(0,3)]
+
+        for i in range(0,3):
+            if diff_rpy[i] > pi:
+                diff_rpy[i] = abs(diff_rpy[i] - 2 * pi)
 
         # diff_list = [diff_lin_x, diff_lin_y, diff_lin_z, diff_ang_w, diff_ang_x, diff_ang_y, diff_ang_z]
-        diff_list = [diff_lin_x, diff_lin_y, diff_lin_z]
-        max_diff = max(diff_list)
-        max_diff_idx = diff_list.index(max_diff)
+        diff_xyz = [diff_lin_x, diff_lin_y, diff_lin_z]
+        max_diff = max(diff_xyz)
+        max_diff_idx = diff_xyz.index(max_diff)
         diff_name_list = ["diff_lin_x", "diff_lin_y", "diff_lin_z", "diff_ang_w", "diff_ang_x", "diff_ang_y", "diff_ang_z"]
 
-        rospy.loginfo("Max diff between goal and current pose comes from: {0}\n diff value:{1}\n\n".format(diff_name_list[max_diff_idx], max_diff))
+        rospy.loginfo("diff lin:{0}, {1}, {2}".format(diff_xyz[0], diff_xyz[1], diff_xyz[2]))
+        rospy.loginfo("diff ang:{0}, {1}, {2}".format(diff_rpy[0], diff_rpy[1], diff_rpy[2]))
 
         if ( diff_lin_x >= tol_lin or
              diff_lin_y >= tol_lin or
              diff_lin_z >= tol_lin or
-             diff_ang_w >= tol_ang or
-             diff_ang_x >= tol_ang or
-             diff_ang_y >= tol_ang or
-             diff_ang_z >= tol_ang):
+             diff_rpy[0] >= tol_ang or
+             diff_rpy[1] >= tol_ang or
+             diff_rpy[2] >= tol_ang):
         #    print("\n######\nCurrent:\n{0}\nGoal:\n{1}\n######\n".format(current_pose,self.__pose_goal))
            return False
         else:
@@ -323,7 +347,11 @@ class GripperInterface(object):
         while not self.goalReached() and n < n_thres:
             rospy.sleep(sleep)
             n += 1
-        print("Goal reached!")
+
+        if n == n_thres:
+            rospy.logwarn("time out, goal is not reached")
+        else:
+            print("Goal reached!")
 
     def setSrvReq(self, req):
         self.__srvReq = req
@@ -364,7 +392,7 @@ class GripperInterface(object):
         self.__preGraspPose.header.frame_id = "world"
         self.__preGraspPose.pose.position = translate_position(position, translation)
         self.__preGraspPose.pose.orientation = rotate_orientation(orientation, rotation)
-        print("pregraspPose: {0}\n".format(self.__preGraspPose))
+        # print("pregraspPose: {0}\n".format(self.__preGraspPose))
 
 
         
@@ -390,10 +418,9 @@ class GripperInterface(object):
         self.__graspPose.header.frame_id = "world"
         self.__graspPose.pose.position = translate_position(position, translation)
         self.__graspPose.pose.orientation = rotate_orientation(orientation, rotation)
-        print("graspPose: {0}\n".format(self.__graspPose))
+        # print("graspPose: {0}\n".format(self.__graspPose))
 
     def set_path_ori_constraints(self, stampedPoseList):
-        # self.__graspPathOriConstraint.orientation = self.pose.__preGraspPose.orientation
         self.__graspPathConstraints.orientation_constraints = []
         ori_constraints = [] 
         for stampedPose in stampedPoseList:
@@ -401,10 +428,13 @@ class GripperInterface(object):
             constraint.header = stampedPose.header
             constraint.orientation = deepcopy(stampedPose.pose.orientation)
             constraint.link_name = "world"
-            constraint.absolute_x_axis_tolerance = 0.05
-            constraint.absolute_y_axis_tolerance = 0.05
-            constraint.absolute_z_axis_tolerance = 0.05
+            constraint.absolute_x_axis_tolerance = 0.2
+            constraint.absolute_y_axis_tolerance = 0.2
+            constraint.absolute_z_axis_tolerance = 0.2
+            constraint.weight = 0.8
             ori_constraints.append(constraint)
+        # ipdb.set_trace()
+        self.__graspPathConstraints.orientation_constraints = ori_constraints
 
 
     def go_to_joint_state(self):
@@ -464,12 +494,13 @@ class GripperInterface(object):
         # Note: there is no equivalent function for clear_joint_value_targets()
         self.group.clear_pose_targets()
         self.group.clear_path_constraints()
+        self.__graspPathConstraints = Constraints()
 
         # For testing:
         # Note that since this section of code will not be included in the tutorials
         # we use the class variable rather than the copied state variable
         current_pose = self.group.get_current_pose()
-        return all_close(self.__pose_goal, current_pose, 0.01)
+        return all_close(self.__pose_goal, current_pose, 0.002)
 
     def localization_grasp(self):
         '''1. Go to preGrasp pose, 
@@ -487,28 +518,32 @@ class GripperInterface(object):
         self.setGripObj()
         self.set_pose_goal(self.__preGraspPose)
         # print(self.__preGraspPose)
+        print("Go to pregrasp pose")
         self.go_to_goal()
         self.wait_till_goal()
 
         self.set_pose_goal(self.__graspPose)
         # print(self.__graspPose)
+        print("Go down to grasp pose")
         self.set_path_ori_constraints([self.__graspPose])
         self.go_to_goal()
         self.wait_till_goal()
     
         # close gripper
+        print("Gripper close and open")
         move(20)
         grip()
         release()
         move(100)
         self.set_pose_goal(self.__preGraspPose)
         self.set_path_ori_constraints([self.__graspPose])
+        print("Go up to pregrasp pose")
         self.go_to_goal()
         self.wait_till_goal()
-
         self.__first_grasp = False
+        
     def resetAll(self):
-        self.__graspPathOriConstraint = OrientationConstraint()
+        self.__graspPathOriConstraints = []
         self.__graspPathConstraints = Constraints()
         self.__first_grasp = True
         self.__srvReq_is_set = False
@@ -687,8 +722,4 @@ def gripperServer():
 
 if __name__ == '__main__':
   # main()
-    if len(sys.argv) == 2:
-        sim_ = sys.argv[1].lower() in ["true", "t", "yes"]
-    elif len(sys.argv) >= 3:
-        rospy.logwarn("Only first argument is used")
     gripperServer()
