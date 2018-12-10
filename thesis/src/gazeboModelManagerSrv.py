@@ -18,18 +18,7 @@ from fakeRecPublisher import FakeRecPublisher
 class GazeboModelCli():
     def __init__(self):
         self.urdfDir = "/root/catkin_ws/src/sim_device/thesis/urdf"
-        self.model_relPose_list = [[[]],
-                                   [[0, 0, 0, pi / 2, 0, 0]],
-                                   [[0.04, 0.01, 0, 0, 0, 0], [-0.04, 0.01, 0, 0, 0, 0], [0.041012, 0.09041, 0.01, 0, 0, 0], [-0.041012, 0.09041, 0.01, 0, 0, 0]],
-                                   [[0, 0, 0.018, 0, 0, 0]],
-                                   [[0, 0.06, 0, 0, 0, 0]],
-                                   [[0, 0.06, 0.018, 0, 0, 0]]]
         self.reset()
-        for i in xrange(1, 6):
-            modelName = "lf0640" + str(i)
-            with open(os.path.join(self.urdfDir, modelName + ".urdf"), "r") as f:
-                model_xml = f.read()
-            self.modelXmlList.append(model_xml)        
         rospy.loginfo("Waiting for gazebo delete_model services...")
         rospy.wait_for_service("/gazebo/delete_model")
         rospy.loginfo("Waiting for gazebo spawn_urdf_model services...")
@@ -43,12 +32,23 @@ class GazeboModelCli():
         self.req.robot_namespace = ""
 
     def reset(self):
+        self.model_relPose_list = [[[]],
+                                   [[0, 0, 0, pi / 2, 0, 0]],
+                                   [[0.04, 0.01, 0, 0, 0, 0], [-0.04, 0.01, 0, 0, 0, 0], [0.041012, 0.09041, 0.01, 0, 0, 0], [-0.041012, 0.09041, 0.01, 0, 0, 0]],
+                                   [[0, 0, 0.018, 0, 0, 0]],
+                                   [[0, 0.06, 0, 0, 0, 0]],
+                                   [[0, 0.06, 0.018, 0, 0, 0]]]
         self.startXYZ = [0.05, 0.08, 1.015, 0, 0, 0]
         self.randlist = [r for r in random.sample(range(0, 51), 20)]
         self.modelsInBin = [1, 2, 2, 2, 2, 3, 4, 5]
-        self.modelXmlList = []
         self.added_models = []
         self.modelsPoses = []
+        self.modelXmlList = []
+        for i in xrange(1, 6):
+            modelName = "lf0640" + str(i)
+            with open(os.path.join(self.urdfDir, modelName + ".urdf"), "r") as f:
+                model_xml = f.read()
+            self.modelXmlList.append(model_xml)        
 
 
     def add_one_model(self):
@@ -117,6 +117,7 @@ class GazeboModelCli():
             self.req.model_xml = self.modelXmlList[modelNumber - 1]
 
             # when there are to many possible pose for a model, randomly choose a pose
+            # ipdb.set_trace()
             model_relPose = self.model_relPose_list[modelNumber].pop(random.sample(range(0, len(self.model_relPose_list[modelNumber])), 1)[0])
             worldPose = [self.startXYZ[i] + model_relPose[i] for i in range(0, 6)]
 
