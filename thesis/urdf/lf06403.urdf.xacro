@@ -21,9 +21,9 @@
      <!-- LINK LF064XX -->
     <link name="link_lf06403">
       <inertial>
-        <mass value="1"/>
-          <origin xyz="0 0 0"/>
-            <inertia  ixx="2.0" ixy="0.0"  ixz="0.0"  iyy="2.0"  iyz="0.0"  izz="2.0" />
+        <mass value="0.0809"/>
+          <origin xyz="0 0.009644 0"/>
+            <inertia  ixx="0.00004879" ixy="0.0"  ixz="0.0"  iyy="0.00007025"  iyz="0.0"  izz="0.00007138" />
       </inertial>
  
      <visual>
