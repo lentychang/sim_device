@@ -77,6 +77,7 @@ class GazeboModelCli():
         if len(self.added_models) > 0:
             delReq = DeleteModelRequest()
             delReq.model_name = self.added_models.pop()
+            tmp=self.modelsPoses.pop()
             tmpResp = self.delete_model_proxy(delReq)
             rospy.loginfo("delete model to gazebo success: " + str(tmpResp.success))
             if tmpResp.success:
