@@ -25,6 +25,11 @@ class GazeboModelCli():
                                    [[0, 0.06, 0, 0, 0, 0]],
                                    [[0, 0.06, 0.018, 0, 0, 0]]]
         self.reset()
+        for i in xrange(1, 6):
+            modelName = "lf0640" + str(i)
+            with open(os.path.join(self.urdfDir, modelName + ".urdf"), "r") as f:
+                model_xml = f.read()
+            self.modelXmlList.append(model_xml)        
         rospy.loginfo("Waiting for gazebo delete_model services...")
         rospy.wait_for_service("/gazebo/delete_model")
         rospy.loginfo("Waiting for gazebo spawn_urdf_model services...")
@@ -44,11 +49,6 @@ class GazeboModelCli():
         self.modelXmlList = []
         self.added_models = []
         self.modelsPoses = []
-        for i in xrange(1, 6):
-            modelName = "lf0640" + str(i)
-            with open(os.path.join(self.urdfDir, modelName + ".urdf"), "r") as f:
-                model_xml = f.read()
-            self.modelXmlList.append(model_xml)
 
 
     def add_one_model(self):
