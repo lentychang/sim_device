@@ -24,6 +24,20 @@ class GazeboModelCli():
                                    [[0, 0, 0.018, 0, 0, 0]],
                                    [[0, 0.06, 0, 0, 0, 0]],
                                    [[0, 0.06, 0.018, 0, 0, 0]]]
+        self.reset()
+        rospy.loginfo("Waiting for gazebo delete_model services...")
+        rospy.wait_for_service("/gazebo/delete_model")
+        rospy.loginfo("Waiting for gazebo spawn_urdf_model services...")
+        rospy.wait_for_service("/gazebo/spawn_urdf_model")
+
+        # instances regards to server client
+        self.spawn_model_proxy = rospy.ServiceProxy("gazebo/spawn_urdf_model", SpawnModel)
+        self.delete_model_proxy = rospy.ServiceProxy("gazebo/delete_model", DeleteModel)
+        self.req = SpawnModelRequest()
+        self.req.reference_frame = "world"
+        self.req.robot_namespace = ""
+
+    def reset(self):
         self.startXYZ = [0.05, 0.08, 1.015, 0, 0, 0]
         self.randlist = [r for r in random.sample(range(0, 51), 20)]
         self.modelsInBin = [1, 2, 2, 2, 2, 3, 4, 5]
@@ -36,17 +50,6 @@ class GazeboModelCli():
                 model_xml = f.read()
             self.modelXmlList.append(model_xml)
 
-        rospy.loginfo("Waiting for gazebo delete_model services...")
-        rospy.wait_for_service("/gazebo/delete_model")
-        rospy.loginfo("Waiting for gazebo spawn_urdf_model services...")
-        rospy.wait_for_service("/gazebo/spawn_urdf_model")
-
-        # instances regards to server client
-        self.spawn_model_proxy = rospy.ServiceProxy("gazebo/spawn_urdf_model", SpawnModel)
-        self.delete_model_proxy = rospy.ServiceProxy("gazebo/delete_model", DeleteModel)
-        self.req = SpawnModelRequest()
-        self.req.reference_frame = "world"
-        self.req.robot_namespace = ""
 
     def add_one_model(self):
         req = self.__getReq()
@@ -156,6 +159,7 @@ def delAllModelSrvCb(req):
     msg = "All model deleted!"
     rospy.loginfo(msg)
     resp.message = msg
+    gazeboModelCli.reset()
     return resp
 
 
