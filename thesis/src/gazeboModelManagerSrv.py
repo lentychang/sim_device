@@ -5,6 +5,7 @@ from gazebo_msgs.srv import DeleteModel, DeleteModelRequest, SpawnModel, SpawnMo
 from thesis_msgs.srv import MvGrpSrv, MvGrpSrvRequest, MvGrpSrvResponse
 from geometry_msgs.msg import Quaternion, Pose, TransformStamped
 from gazebo_msgs.msg import ModelStates
+from gazebo_msgs.srv import GetWorldProperties
 from std_srvs.srv import Empty, EmptyRequest, EmptyResponse, Trigger, TriggerResponse
 import os
 import ipdb
@@ -12,6 +13,7 @@ from numpy import ndarray
 import sys
 import random
 from math import pi
+from copy import deepcopy
 from fakeRecPublisher import FakeRecPublisher
 
 
@@ -19,10 +21,11 @@ class GazeboModelCli():
     def __init__(self):
         self.urdfDir = "/root/catkin_ws/src/sim_device/thesis/urdf"
         self.reset()
-        rospy.loginfo("Waiting for gazebo delete_model services...")
+        rospy.loginfo("Waiting for service: /gazebo/delete_model")
         rospy.wait_for_service("/gazebo/delete_model")
-        rospy.loginfo("Waiting for gazebo spawn_urdf_model services...")
+        rospy.loginfo("Waiting for service: /gazebo/spawn_urdf_model")
         rospy.wait_for_service("/gazebo/spawn_urdf_model")
+
 
         # instances regards to server client
         self.spawn_model_proxy = rospy.ServiceProxy("gazebo/spawn_urdf_model", SpawnModel)
@@ -43,6 +46,7 @@ class GazeboModelCli():
         self.modelsInBin = [1, 2, 2, 2, 2, 3, 4, 5]
         self.added_models = []
         self.modelsPoses = []
+        self.noisyPoses = []
         self.modelXmlList = []
         for i in xrange(1, 6):
             modelName = "lf0640" + str(i)
@@ -63,8 +67,10 @@ class GazeboModelCli():
             rospy.loginfo("add model to gazebo success: " + str(tmpResp.success))
             info = "Add model: '" + str(self.req.model_name), "' at : " + str(self.req.initial_pose) + "(xyz,quaternion) succeed!"
             rospy.loginfo(info)
-            self.added_models.append(self.req.model_name)
-            self.modelsPoses.append(self.req.initial_pose)
+            # ipdb.set_trace()
+            self.added_models.append(deepcopy(self.req.model_name))
+            self.modelsPoses.append(deepcopy(self.req.initial_pose))
+            self.noisyPoses.append(deepcopy(self.req.initial_pose))
         else:
             status_message = "Add model failed"
             rospy.logwarn(status_message)
@@ -119,7 +125,8 @@ class GazeboModelCli():
             # when there are to many possible pose for a model, randomly choose a pose
             # ipdb.set_trace()
             model_relPose = self.model_relPose_list[modelNumber].pop(random.sample(range(0, len(self.model_relPose_list[modelNumber])), 1)[0])
-            worldPose = [self.startXYZ[i] + model_relPose[i] for i in range(0, 6)]
+            worldPose = [self.startXYZ[i] + model_relPose[i] for i in
+             range(0, 6)]
 
             # assign pose
             self.req.initial_pose.position.x = worldPose[0]
@@ -139,12 +146,17 @@ class GazeboModelCli():
 rospy.init_node("addModelSrv")
 gazeboModelCli = GazeboModelCli()
 fakeRecPub = FakeRecPublisher()
-
+add_noise = True
 
 def addModelSrvCb(req):
     resp = gazeboModelCli.add_one_model()
-    fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.modelsPoses)
-    fakeRecPub.pubOnce()
+    if add_noise:
+        fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.noisyPoses)
+        fakeRecPub.pubOnce(add_noise=True)
+    
+    else:
+        fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.modelsPoses)
+        fakeRecPub.pubOnce(add_noise=False)
     return resp
 
 
