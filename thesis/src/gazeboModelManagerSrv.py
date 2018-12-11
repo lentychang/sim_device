@@ -5,7 +5,7 @@ from gazebo_msgs.srv import DeleteModel, DeleteModelRequest, SpawnModel, SpawnMo
 from thesis_msgs.srv import MvGrpSrv, MvGrpSrvRequest, MvGrpSrvResponse
 from geometry_msgs.msg import Quaternion, Pose, TransformStamped
 from gazebo_msgs.msg import ModelStates
-from gazebo_msgs.srv import GetWorldProperties
+from gazebo_msgs.srv import GetWorldProperties, GetWorldPropertiesRequest, GetWorldPropertiesResponse
 from std_srvs.srv import Empty, EmptyRequest, EmptyResponse, Trigger, TriggerResponse
 import os
 import ipdb
@@ -25,11 +25,14 @@ class GazeboModelCli():
         rospy.wait_for_service("/gazebo/delete_model")
         rospy.loginfo("Waiting for service: /gazebo/spawn_urdf_model")
         rospy.wait_for_service("/gazebo/spawn_urdf_model")
+        rospy.loginfo("Waiting for service: /gazebo/get_world_properties")
+        rospy.wait_for_service("/gazebo/get_world_properties")
 
 
         # instances regards to server client
-        self.spawn_model_proxy = rospy.ServiceProxy("gazebo/spawn_urdf_model", SpawnModel)
-        self.delete_model_proxy = rospy.ServiceProxy("gazebo/delete_model", DeleteModel)
+        self.spawn_model_proxy = rospy.ServiceProxy("/gazebo/spawn_urdf_model", SpawnModel)
+        self.delete_model_proxy = rospy.ServiceProxy("/gazebo/delete_model", DeleteModel)
+        self.get_worldProperties_proxy = rospy.ServiceProxy("/gazebo/get_world_properties", GetWorldProperties)
         self.req = SpawnModelRequest()
         self.req.reference_frame = "world"
         self.req.robot_namespace = ""
@@ -165,11 +168,18 @@ def delModelSrvCb(req):
 
 
 def delAllModelSrvCb(req):
-    for i in range(0, len(gazeboModelCli.added_models)):
-        gazeboModelCli.del_one_model()
+    worldProp = gazeboModelCli.get_worldProperties_proxy(GetWorldPropertiesRequest())
+    if len(worldProp.model_names)>2:
+        modelsToDel = worldProp.model_names[2:]
+        for modelName in modelsToDel:
+            delModelReq = DeleteModelRequest()
+            delModelReq.model_name = modelName
+            gazeboModelCli.delete_model_proxy(delModelReq)
+        msg = "All model deleted!"
+    else:
+        msg = "No model to be deleted!"
     resp = TriggerResponse()
     resp.success = True
-    msg = "All model deleted!"
     rospy.loginfo(msg)
     resp.message = msg
     gazeboModelCli.reset()
@@ -178,9 +188,9 @@ def delAllModelSrvCb(req):
 
 if __name__ == '__main__':
     # wait for all servers
-    s = rospy.Service('/addModelSrv', Trigger, addModelSrvCb)
-    d = rospy.Service('/delModelSrv', Trigger, delModelSrvCb)
-    d = rospy.Service('/delAllModelSrv', Trigger, delAllModelSrvCb)
+    addOne = rospy.Service('/addModelSrv', Trigger, addModelSrvCb)
+    delOne = rospy.Service('/delModelSrv', Trigger, delModelSrvCb)
+    delAll = rospy.Service('/delAllModelSrv', Trigger, delAllModelSrvCb)
 
     rospy.loginfo("Following Server are Connected: /addModelSrv, /delModelSrv")
     rospy.spin()
