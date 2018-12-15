@@ -68,7 +68,7 @@ class FakeRecPublisher:
     #[TODO] fix the error keep changing
     def setMsg(self, addedModels, modelsPoses):
         assert len(addedModels) == len(modelsPoses), 'The length of addedModels and modelsPoses must be the same'
-        ipdb.set_trace()
+        # ipdb.set_trace()
         self.msg = objectLocalization()
         self.msg.modelList = addedModels
         self.msg.pose = modelsPoses
@@ -76,7 +76,7 @@ class FakeRecPublisher:
     def __noise_trsf(self):
         randomList = []
         for i  in range(0,3):
-            randomList.append(random.gauss(mu=0.01, sigma=0.02))
+            randomList.append(random.gauss(mu=0.01, sigma=0.01))
         for i  in range(0,3):
             randomList.append(random.gauss(mu=radians(10)/2.0, sigma=radians(20)/2.0))
         print("randomList gen:{0}".format(randomList))
