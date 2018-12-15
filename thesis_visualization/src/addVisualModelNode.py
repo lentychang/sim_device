@@ -62,6 +62,9 @@ class MarkersManipulation:
         marker.header.stamp = rospy.Time.now()
         marker.ns = self.ns
         marker.type = marker.MESH_RESOURCE
+        modelname = modelname.split("_")[0]
+        # reform modelname lf06401--> lf064-01
+        modelname = modelname[:-2] + "-" + modelname[-2:]
         filePath = "file://" + self.__modelDir + "/meshes/" + modelname + ".dae"
         # print filePath
         marker.mesh_resource = filePath
