@@ -164,8 +164,10 @@ def addModelSrvCb(req):
 
 
 def delModelSrvCb(req):
-    return gazeboModelCli.del_one_model()
-
+    resp = gazeboModelCli.del_one_model()
+    fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.modelsPoses)
+    fakeRecPub.pubOnce(add_noise=True)
+    return resp
 
 def delAllModelSrvCb(req):
     worldProp = gazeboModelCli.get_worldProperties_proxy(GetWorldPropertiesRequest())
