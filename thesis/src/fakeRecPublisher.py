@@ -58,64 +58,107 @@ class FakeRecPublisher:
         self.pubTopic = "/detectedObjs_beforeAligned"
         self.pub = rospy.Publisher(self.pubTopic, objectLocalization,queue_size=1)
         self.rate = rospy.Rate(1)
-        self.msg = objectLocalization()
-        self.fake_msg = objectLocalization()
+        self.msg_in = objectLocalization()
+        self.msg_addNoise = objectLocalization()
+        # msg with noise
+        self.msg_out = objectLocalization()
 
     def resetPubTopic(self, topicName):
         self.pubTopic = topicName
         self.pub = rospy.Publisher(self.pubTopic, objectLocalization,queue_size=1)
 
-    #[TODO] fix the error keep changing
-    def setMsg(self, addedModels, modelsPoses):
-        assert len(addedModels) == len(modelsPoses), 'The length of addedModels and modelsPoses must be the same'
+    def setMsg(self, modelList, modelPoses):
+        assert len(modelList) == len(modelPoses), 'The length of modelList and modelPoses must be the same'
         # ipdb.set_trace()
-        self.msg = objectLocalization()
-        self.msg.modelList = addedModels
-        self.msg.pose = modelsPoses
+        if len(modelList) == 0:
+            self.msg_in = objectLocalization()
+            self.msg_addNoise = objectLocalization()
+            self.msg_out = objectLocalization()
+
+        self.msg_addNoise = objectLocalization()
+
+        print("input modelList: {0}".format(modelList))
+        print("current modelList: {0}".format(self.msg_in.modelList))
+
+        union = list(set(modelList + self.msg_in.modelList))
+
+        for i in range(0, len(union)):
+            modelname = union[i]
+            # means a model in gazebo is deleted, so we also remove the model here
+            if (modelname not in modelList) and (modelname in self.msg_in.modelList):
+                rmIdx = self.msg_in.modelList.index(modelname)
+                self.msg_in.modelList.remove(modelname)
+                self.msg_in.headers.remove(self.msg_in.headers[rmIdx])
+                self.msg_in.pose.remove(self.msg_in.pose[rmIdx])
+
+                rmIdx = self.msg_out.modelList.index(modelname)
+                self.msg_out.modelList.remove(modelname)
+                self.msg_out.headers.remove(self.msg_out.headers[rmIdx])
+                self.msg_out.pose.remove(self.msg_out.pose[rmIdx])
+
+            if (modelname not in self.msg_in.modelList) and (modelname in modelList):
+                # deepcopy to prevent original poses modified by addNoise
+                self.msg_in.modelList.append(modelname)
+                self.msg_in.pose.append(deepcopy(modelPoses[modelList.index(modelname)]))
+
+                self.msg_addNoise.modelList.append(modelname)
+                self.msg_addNoise.pose.append(modelPoses[modelList.index(modelname)])
+            
+
+
 
     def __noise_trsf(self):
         randomList = []
         for i  in range(0,3):
             randomList.append(random.gauss(mu=0.01, sigma=0.01))
         for i  in range(0,3):
-            randomList.append(random.gauss(mu=radians(10)/2.0, sigma=radians(20)/2.0))
+            randomList.append(random.gauss(mu=radians(15)/2.0, sigma=radians(15)/2.0))
         print("randomList gen:{0}".format(randomList))
         trsf = list2Transform(randomList)
         print("trsf gen:{0}".format(trsf))
         return trsf
+
     def __addNoise(self, add_noise=True):
         # the input msg is already noisy poses, except the last pose haven't been imposed noise
-        self.fake_msg = self.msg
-        print("before add noise\n{0}".format(self.fake_msg))
+        print("before add noise\n{0}".format(self.msg_in))
         
-        # Add noise to last one
-        pose = self.fake_msg.pose[-1]
-        trsf = self.__noise_trsf()
-        pose.position = translate_position(pose.position, trsf.translation)
-        pose.orientation = rotate_orientation(pose.orientation, trsf.rotation)
-
-        print("after add noise\n{0}".format(self.fake_msg))
-
+        # Add noise to the new input
+        for i in  range(0, len(self.msg_addNoise.pose)):
+            pose = self.msg_addNoise.pose[i]
+            trsf = self.__noise_trsf()
+            pose.position = translate_position(pose.position, trsf.translation)
+            pose.orientation = rotate_orientation(pose.orientation, trsf.rotation)
+            self.msg_out.modelList.append(self.msg_addNoise.modelList[i])
+            self.msg_out.pose.append(pose)
 
     def __setMsgHeader(self):
-        n = len(self.msg.modelList)
+        n = len(self.msg_in.modelList)
         t_stamp = rospy.Time.now()
-        self.msg.headers = [std_msgs.msg.Header()] * n
-        for i in range(0,len(self.msg.modelList)):
-            self.msg.headers[i].stamp=t_stamp
-            self.msg.headers[i].frame_id = "world"
+        self.msg_in.headers = [std_msgs.msg.Header()] * n
+        for i in range(0,len(self.msg_in.modelList)):
+            self.msg_in.headers[i].stamp=t_stamp
+            self.msg_in.headers[i].frame_id = "world"
+
+        n = len(self.msg_out.modelList)
+        self.msg_out.headers = [std_msgs.msg.Header()] * n
+        for i in range(0,len(self.msg_out.modelList)):
+            self.msg_out.headers[i].stamp=t_stamp
+            self.msg_out.headers[i].frame_id = "world"
+
     def pubOnce(self, add_noise=True):
-        self.__setMsgHeader()
         if add_noise:
             self.__addNoise()
-            self.pub.publish(self.fake_msg)
+            self.__setMsgHeader()
+            print("after add noise\n{0}".format(self.msg_out))
+            self.pub.publish(self.msg_out)
         else:
-            self.pub.publish(self.msg)
+            self.__setMsgHeader()
+            self.pub.publish(self.msg_in)
 
     def publish(self):
         while (not rospy.is_shutdown()):
             self.__setMsgHeader()
-            self.pub.publish(self.msg)
+            self.pub.publish(self.msg_in)
             self.rate.sleep()
 
 def __testPublisher():
@@ -124,9 +167,9 @@ def __testPublisher():
     pose = Pose()
     pose.orientation.w = 1.0
     poseList = [deepcopy(pose), deepcopy(pose), deepcopy(pose)]
-    modelList = ["lf064-01"]*3
+    modelList = ["lf064-01_01", "lf064-01_02", "lf064-01_03"]
     fake_node.setMsg(modelList,poseList)
-    fake_node.addNoise()
+    fake_node.pubOnce()
 
 
 if __name__ == "__main__":

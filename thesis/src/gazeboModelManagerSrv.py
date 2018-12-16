@@ -44,7 +44,7 @@ class GazeboModelCli():
                                    [[0, 0, 0.018, 0, 0, 0]],
                                    [[0, 0.06, 0, 0, 0, 0]],
                                    [[0, 0.06, 0.018, 0, 0, 0]]]
-        self.startXYZ = [0.05, 0.08, 1.015, 0, 0, 0]
+        self.startXYZ = [0.05, 0.08, 1.205, 0, 0, 0]
         self.randlist = [r for r in random.sample(range(0, 51), 20)]
         self.modelsInBin = [1, 2, 2, 2, 2, 3, 4, 5]
         self.added_models = []
@@ -89,7 +89,7 @@ class GazeboModelCli():
         if len(self.added_models) > 0:
             delReq = DeleteModelRequest()
             delReq.model_name = self.added_models.pop()
-            tmp=self.modelsPoses.pop()
+            tmp = self.modelsPoses.pop()
             tmpResp = self.delete_model_proxy(delReq)
             rospy.loginfo("delete model to gazebo success: " + str(tmpResp.success))
             if tmpResp.success:
@@ -128,9 +128,7 @@ class GazeboModelCli():
             # when there are to many possible pose for a model, randomly choose a pose
             # ipdb.set_trace()
             model_relPose = self.model_relPose_list[modelNumber].pop(random.sample(range(0, len(self.model_relPose_list[modelNumber])), 1)[0])
-            worldPose = [self.startXYZ[i] + model_relPose[i] for i in
-             range(0, 6)]
-
+            worldPose = [self.startXYZ[i] + model_relPose[i] for i in range(0, 6)]
             # assign pose
             self.req.initial_pose.position.x = worldPose[0]
             self.req.initial_pose.position.y = worldPose[1]
@@ -154,7 +152,7 @@ add_noise = True
 def addModelSrvCb(req):
     resp = gazeboModelCli.add_one_model()
     if add_noise:
-        fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.noisyPoses)
+        fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.modelsPoses)
         fakeRecPub.pubOnce(add_noise=True)
     
     else:
@@ -164,8 +162,10 @@ def addModelSrvCb(req):
 
 
 def delModelSrvCb(req):
-    return gazeboModelCli.del_one_model()
-
+    resp = gazeboModelCli.del_one_model()
+    fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.modelsPoses)
+    fakeRecPub.pubOnce(add_noise=True)
+    return resp
 
 def delAllModelSrvCb(req):
     worldProp = gazeboModelCli.get_worldProperties_proxy(GetWorldPropertiesRequest())
@@ -181,6 +181,8 @@ def delAllModelSrvCb(req):
         msg = "All model deleted!"
     else:
         msg = "No model to be deleted!"
+    fakeRecPub.setMsg(gazeboModelCli.added_models, gazeboModelCli.modelsPoses)
+    fakeRecPub.pubOnce(add_noise=True)
     resp = TriggerResponse()
     resp.success = True
     rospy.loginfo(msg)
@@ -195,7 +197,7 @@ if __name__ == '__main__':
     delOne = rospy.Service('/delModelSrv', Trigger, delModelSrvCb)
     delAll = rospy.Service('/delAllModelSrv', Trigger, delAllModelSrvCb)
 
-    rospy.loginfo("Following Server are Connected: /addModelSrv, /delModelSrv")
+    rospy.loginfo("Following Server are Connected: /addModelSrv, /delModelSrv, /delAllModelSrv")
     rospy.spin()
 
 
