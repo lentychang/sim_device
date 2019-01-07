@@ -109,10 +109,12 @@ class FakeRecPublisher:
 
     def __noise_trsf(self):
         randomList = []
-        for i  in range(0,3):
-            randomList.append(random.gauss(mu=0.01, sigma=0.01))
-        for i  in range(0,3):
-            randomList.append(random.gauss(mu=radians(15)/2.0, sigma=radians(15)/2.0))
+        for i in range(0,3):
+            randomList.append(random.gauss(mu=0.01, sigma=0.006))
+        rpy_err = [30, 20, 10]
+        random.shuffle(rpy_err)
+        for ang_err in rpy_err:
+            randomList.append(random.gauss(mu=radians(ang_err)/2.0, sigma=radians(ang_err)/2.0))
         print("randomList gen:{0}".format(randomList))
         trsf = list2Transform(randomList)
         print("trsf gen:{0}".format(trsf))

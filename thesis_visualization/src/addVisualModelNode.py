@@ -31,7 +31,7 @@ class MarkersManipulation:
         self.color.r = round(random.uniform(0,1),1)
         self.color.g = round(random.uniform(0,1),1)
         self.color.b = round(random.uniform(0,1),1)
-        self.color.a = round(random.uniform(0.4,0.8),1)
+        self.color.a = 0.9
 
         self.markerArray = MarkerArray()
         self.objList = objectLocalization()
