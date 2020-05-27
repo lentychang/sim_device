@@ -23,8 +23,18 @@ Folders wsg50, iiwa_stack, and depth sensor are modified from other open source 
 ### Env
 The enviroment setup files are in my repository `bringups`
 
+## Configuration
+catkin_ws dir: By default `catkin_ws` is directly under `HOME` directroy.  
+model dir: By default `exchange`, where 3D models are stored, is also directly under `HOME` directroy.  
+
+Only the path in `thesis/urdf/genLf064Urdf.bash` need to be manually modified with following command:  
+`sed -i s|\/home\/ubuntu|${HOME}|g genLf064Urdf.bash`
+
 There are two environments used for this repository:
-    
+
+## Launch Simulation
+`roslaunch thesis thesis.launch`
+
 **Env_name: pkgs**
 gazebo: gazebo, iiwa_stack , depth_sensor(kinect2)
 moveit: rviz, iiwa_stack, 

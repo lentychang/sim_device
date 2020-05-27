@@ -4,7 +4,7 @@
   <xacro:arg name="origin_xyz" default="'0 0 0'"/>
   <xacro:arg name="origin_rpy" default="'0 0 0'"/>
   <xacro:arg name="root_linkName" default="world"/>
-  <xacro:arg name="modelDir" default="/root/exchange/tempData"/>
+  <xacro:arg name="modelDir" default="$eval( env('HOME') + '/exchange/tempData')"/>
   <xacro:arg name="scale" default="'0.001 0.001 0.001'"/>
 
   <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />

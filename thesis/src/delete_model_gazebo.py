@@ -7,9 +7,10 @@ import os
 import ipdb
 from numpy import ndarray
 import sys
+from pathlib import Path
+catkin_parent = str(Path.home())+ "/"
 
-
-urdfDir = "/root/catkin_ws/src/sim_device/thesis/urdf"
+urdfDir = catkin_parent + "catkin_ws/src/sim_device/thesis/urdf"
 
 
 if __name__ == '__main__':

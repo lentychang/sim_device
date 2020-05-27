@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import rospy, tf
 from gazebo_msgs.srv import DeleteModel, DeleteModelRequest, SpawnModel, SpawnModelRequest, DeleteModelResponse, SpawnModelResponse
@@ -16,10 +16,12 @@ from math import pi
 from copy import deepcopy
 from fakeRecPublisher import FakeRecPublisher
 
+from pathlib import Path
+catkin_parent =  str(Path.home())+ "/"
 
 class GazeboModelCli():
     def __init__(self):
-        self.urdfDir = "/root/catkin_ws/src/sim_device/thesis/urdf"
+        self.urdfDir = catkin_parent + "catkin_ws/src/sim_device/thesis/urdf"
         self.reset()
         rospy.loginfo("Waiting for service: /gazebo/delete_model")
         rospy.wait_for_service("/gazebo/delete_model")
@@ -51,7 +53,7 @@ class GazeboModelCli():
         self.modelsPoses = []
         self.noisyPoses = []
         self.modelXmlList = []
-        for i in xrange(1, 6):
+        for i in range(1, 6):
             modelName = "lf0640" + str(i)
             with open(os.path.join(self.urdfDir, modelName + ".urdf"), "r") as f:
                 model_xml = f.read()
