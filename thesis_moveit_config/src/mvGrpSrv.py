@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # Software License Agreement (BSD License)
 #
@@ -119,21 +119,19 @@ class MoveGroupPythonInteface(object):
         ## ^^^^^^^^^^^^^^^^^^^^^^^^^
         # We can get the name of the reference frame for this robot:
         planning_frame = group.get_planning_frame()
-        print "============ Reference frame: %s" % planning_frame
+        print(f"============ Reference frame: {planning_frame}")
 
         # We can also print the name of the end-effector link for this group:
         eef_link = group.get_end_effector_link()
-        print "============ End effector: %s" % eef_link
+        print(f"============ End effector: {eef_link}")
 
         # We can get a list of all the groups in the robot:
         group_names = robot.get_group_names()
-        print "============ Robot Groups:", robot.get_group_names()
+        print(f"============ Robot Groups: {robot.get_group_names()}")
 
         # Sometimes for debugging it is useful to print the entire state of the
         # robot:
-        print "============ Printing robot state"
-        print robot.get_current_state()
-        print ""
+        print(f"============ Printing robot state\n{robot.get_current_state()}\n")
         ## END_SUB_TUTORIAL
 
         # Misc variables
@@ -154,17 +152,17 @@ class MoveGroupPythonInteface(object):
         self.poseList[0].orientation.x = 0.982
         self.poseList[0].orientation.y = 0.080
         self.poseList[0].orientation.z = 0.163
-	self.poseList[0].orientation.w = -0.044
+        self.poseList[0].orientation.w = -0.044
         self.set_pose_goal(0)
         self.appendPose()
 
 
     def appendPose(self):
         xyzxyzwList = [-0.2297, 0.0647, 1.8842, -0.6999, -0.664, -0.2292, 0.127]
-	pose = self.__genPosefromList(xyzxyzwList)
+        pose = self.__genPosefromList(xyzxyzwList)
         self.poseList.append(pose)
         xyzxyzwList = [-0.1339, 0.3287, 1.5882, 0.6753, 0.6392, 0.2902, -0.226]
-	pose = self.__genPosefromList(xyzxyzwList)
+        pose = self.__genPosefromList(xyzxyzwList)
         self.poseList.append(pose)
 
 

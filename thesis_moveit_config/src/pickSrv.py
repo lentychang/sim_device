@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # Software License Agreement (BSD License)
 #
@@ -205,21 +205,20 @@ class GripperInterface(object):
         ## Getting Basic Information
         # We can get the name of the reference frame for this robot:
         planning_frame = group.get_planning_frame()
-        print "============ Reference frame: %s" % planning_frame
+        print(f"============ Reference frame: {planning_frame}")
 
         # We can also print the name of the end-effector link for this group:
         eef_link = group.get_end_effector_link()
-        print "============ End effector: %s" % eef_link
+        print(f"============ End effector: {eef_link}")
 
         # We can get a list of all the groups in the robot:
         group_names = robot.get_group_names()
-        print "============ Robot Groups:", robot.get_group_names()
+        print(f"============ Robot Groups: {robot.get_group_names()}")
 
         # Sometimes for debugging it is useful to print the entire state of the
         # robot:
-        print "============ Printing robot state"
-        print robot.get_current_state()
-        print ""
+        print(f"============ Printing robot state\n{robot.get_current_state()}\n")
+        ## END_SUB_TUTORIAL
 
         # Misc variables
         self.robot = robot
