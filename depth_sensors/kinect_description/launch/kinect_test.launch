@@ -7,7 +7,7 @@
   </include>
 
   <!-- urdf xml robot description loaded on the Parameter Server, converting the xacro into a proper urdf file-->
-  <param name="robot_description" command="/opt/ros/kinetic/bin/xacro --inorder '$(find kinect_description)/urdf/kinect_test.xacro'" />
+  <param name="robot_description" command="/opt/ros/noetic/bin/xacro --inorder '$(find kinect_description)/urdf/kinect_test.xacro'" />
 
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="kinect2_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
@@ -26,7 +26,7 @@
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
-    <param name="robot_description" command="/opt/ros/kinetic/bin/xacro --inorder '$(find kinect_description)/urdf/kinect_test.xacro'" />
+    <param name="robot_description" command="/opt/ros/noetic/bin/xacro --inorder '$(find kinect_description)/urdf/kinect_test.xacro'" />
     <remap from="/joint_states" to="/kinect2/joint_states" />
   </node>
 

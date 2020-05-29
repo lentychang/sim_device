@@ -8,9 +8,11 @@
 
     <param if="$(arg load_kinect_description)"
            name="robot_description"
-           command="$(find xacro)/xacro.py
+           command="$(find xacro)/xacro
                     --inorder $(find kinect_description)/urdf/kinect/kinect2.xacro
                     gazebo:=true"/>
+
+
 
     <!-- Publish a static transform between the world and the base of the kinect -->
     <node pkg="tf2_ros" type="static_transform_publisher"

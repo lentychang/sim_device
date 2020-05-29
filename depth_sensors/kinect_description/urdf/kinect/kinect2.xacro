@@ -71,6 +71,12 @@
         associated .gazebo.xacro file... -->
         <!-- See https://github.com/turtlebot/turtlebot and there
         turtlebot_description/urdf/turtlebot_gazebo.urdf.xacro -->
+        <gazebo>
+            <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+                <robotNamespace>/kinect2</robotNamespace>
+            </plugin>
+        </gazebo>
+
         <gazebo reference="${name}_link">
             <sensor name="${name}_sensor" type="depth">
                 <always_on>true</always_on>
