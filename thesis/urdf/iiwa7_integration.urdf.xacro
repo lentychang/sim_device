@@ -19,7 +19,7 @@
   <xacro:arg name="origin_xyz" default="0 -0.3 0"/>
   <xacro:arg name="origin_rpy" default="0 0 0"/>
   <xacro:arg name="table_ee" default="table_ee"/>
-  <xacro:arg name="modelDir" default="/root/exchange/tempData' )"/>
+  <xacro:arg name="modelDir" default="$(env HOME)/exchange/tempData"/>
   
   <!-- Fix to world just for testing -->
   <link name="world"/>

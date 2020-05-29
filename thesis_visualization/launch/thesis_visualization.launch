@@ -2,7 +2,7 @@
     <launch>
         <arg name="cameraFrame" default="/kinect2_depth_optical_frame"/>
         <arg name="pubTopic_detectedObjs_beforeAligned" default="/detectedObjs_beforeAligned"/>
-        <arg name="modelDir" default="$eval( env('HOME') + '/exchange/tempData' )" )/>
+        <arg name="modelDir" default="$(env HOME)/exchange/tempData"/>
 
         <!--a fake node that publish fake object recognition results-->
         <!-- <node name="fake_recognition_publisher" pkg="thesis_visualization" type="fakeObjPublisher.py" 

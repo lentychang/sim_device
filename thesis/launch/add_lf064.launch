@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 
 <launch>
-    <arg name="modelDir" default="env('HOME')/exchange/tempData"/>
+    <arg name="modelDir" default="$(env HOME)/exchange/tempData"/>
     <arg name="origin_xyz_01" default="0.3 0.25 1"/>
     <arg name="origin_xyz_02" default="0.3 0.2 1"/>
     <arg name="origin_xyz_03" default="0.3 0.3 1"/>
