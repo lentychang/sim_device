@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import roslib
 from visualization_msgs.msg import Marker

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import rospy, tf
 from gazebo_msgs.srv import DeleteModel, DeleteModelRequest, SpawnModel, SpawnModelRequest, DeleteModelResponse, SpawnModelResponse
@@ -16,8 +16,8 @@ from math import pi
 from copy import deepcopy
 from fakeRecPublisher import FakeRecPublisher
 
-from pathlib import Path
-catkin_parent =  str(Path.home())+ "/"
+from os.path import expanduser
+catkin_parent =  expanduser("~")+ "/"
 
 class GazeboModelCli():
     def __init__(self):
