@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 # Software License Agreement (BSD License)
 #
@@ -119,19 +119,19 @@ class MoveGroupPythonInteface(object):
         ## ^^^^^^^^^^^^^^^^^^^^^^^^^
         # We can get the name of the reference frame for this robot:
         planning_frame = group.get_planning_frame()
-        print(f"============ Reference frame: {planning_frame}")
+        # print("============ Reference frame: {planning_frame}")
 
         # We can also print the name of the end-effector link for this group:
         eef_link = group.get_end_effector_link()
-        print(f"============ End effector: {eef_link}")
+        # print(f"============ End effector: {eef_link}")
 
         # We can get a list of all the groups in the robot:
         group_names = robot.get_group_names()
-        print(f"============ Robot Groups: {robot.get_group_names()}")
+        # print(f"============ Robot Groups: {robot.get_group_names()}")
 
         # Sometimes for debugging it is useful to print the entire state of the
         # robot:
-        print(f"============ Printing robot state\n{robot.get_current_state()}\n")
+        # print(f"============ Printing robot state\n{robot.get_current_state()}\n")
         ## END_SUB_TUTORIAL
 
         # Misc variables
