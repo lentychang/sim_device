@@ -39,7 +39,7 @@
         <origin rpy="0 0 0" xyz="0.0 0 -${1.2/2}"/>
           <geometry>
             <!--mesh filename="package://thesis/meshes/lf064_base.stl" scale="0.001 0.001 0.001"/-->
-            <box size="0.985 0.698 1.2"/>
+            <box size="0.985 0.698 1.1"/>
           </geometry>
       </collision>
     </link>
