@@ -37,7 +37,7 @@
   <!-- schunk greifer  -->
   <!-- <xacro:wsg_50_xacro name="wsg50" parent="iiwa_link_ee" gripperHwInterface="$(arg gripperHwInterface)">
     <origin xyz="0 0 0.01" rpy= "0 0 0"/>
-  </xacro:wsg_50_xacro>-->
+  </xacro:wsg_50_xacro> -->
 
   
 
